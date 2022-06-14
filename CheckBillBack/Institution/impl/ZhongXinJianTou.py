@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-from Check_Bill_Test.Institution.AbstractInstitution import AbstractInstitution
+from CheckBillBack.Institution.AbstractInstitution import AbstractInstitution
 
 
 class ZhongXinJianTou(AbstractInstitution):

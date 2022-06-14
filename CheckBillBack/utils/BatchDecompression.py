@@ -3,7 +3,7 @@ import rarfile, os, re, shutil, zipfile
 from os import listdir
 
 # _*_ coding: utf-8 _*_
-from Check_Bill_Test.utils.Transform_FileName import Transform_FileName
+from CheckBillBack.utils.Transform_FileName import Transform_FileName
 
 """
 @Author: Wave Zhou

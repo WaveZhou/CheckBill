@@ -1,6 +1,6 @@
 # _*_ coding: utf-8 _*_
-from Check_Bill_Test.Institution.AbstractInstitution import AbstractInstitution
-from Check_Bill_Test.utils.BatchDecompression import BatchDecompression
+from CheckBillBack.Institution.AbstractInstitution import AbstractInstitution
+from CheckBillBack.utils.BatchDecompression import BatchDecompression
 
 
 class GuoTouAnXin(AbstractInstitution):

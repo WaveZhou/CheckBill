@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-from Check_Bill_Test.Institution.impl.DongBei import DongBei
+from CheckBillBack.Institution.impl.DongBei import DongBei
 
 
 class A:

@@ -8,24 +8,24 @@ import shutil
 import pandas as pd
 import pdfplumber
 
-from Check_Bill_Test.Institution.impl.DongBei import DongBei
-from Check_Bill_Test.Institution.impl.AnXin import AnXin
-from Check_Bill_Test.Institution.impl.ChangJiang import ChangJiang
-from Check_Bill_Test.Institution.impl.GuoJun import GuoJun
-from Check_Bill_Test.Institution.impl.GuoTouAnXin import GuoTouAnXin
-from Check_Bill_Test.Institution.impl.HuaChuang import HuaChuang
-from Check_Bill_Test.Institution.impl.JianXin import JianXin
-from Check_Bill_Test.Institution.impl.NanHua import NanHua
-from Check_Bill_Test.Institution.impl.XingYe import XingYe
-from Check_Bill_Test.Institution.impl.YinHe import YinHe
-from Check_Bill_Test.Institution.impl.YongAn import YongAn
-from Check_Bill_Test.Institution.impl.ZhongXinJianTou import ZhongXinJianTou
-from Check_Bill_Test.Institution.impl.ZhongCaiQiHuo import ZhongCaiQiHuo
-from Check_Bill_Test.Institution.AbstractInstitution import AbstractInstitution
-from Check_Bill_Test.utils.Log_Record import Log
-from Check_Bill_Test.utils.MysqlProxy import MysqlProxy
+from CheckBillBack.Institution.impl.DongBei import DongBei
+from CheckBillBack.Institution.impl.AnXin import AnXin
+from CheckBillBack.Institution.impl.ChangJiang import ChangJiang
+from CheckBillBack.Institution.impl.GuoJun import GuoJun
+from CheckBillBack.Institution.impl.GuoTouAnXin import GuoTouAnXin
+from CheckBillBack.Institution.impl.HuaChuang import HuaChuang
+from CheckBillBack.Institution.impl.JianXin import JianXin
+from CheckBillBack.Institution.impl.NanHua import NanHua
+from CheckBillBack.Institution.impl.XingYe import XingYe
+from CheckBillBack.Institution.impl.YinHe import YinHe
+from CheckBillBack.Institution.impl.YongAn import YongAn
+from CheckBillBack.Institution.impl.ZhongXinJianTou import ZhongXinJianTou
+from CheckBillBack.Institution.impl.ZhongCaiQiHuo import ZhongCaiQiHuo
+from CheckBillBack.Institution.AbstractInstitution import AbstractInstitution
+from CheckBillBack.utils.Log_Record import Log
+from CheckBillBack.utils.MysqlProxy import MysqlProxy
 
-from Transform_FileName import Transform_FileName
+from utils.Transform_FileName import Transform_FileName
 
 settings = {
     'origin_path': r'D:\整理券商对账单\origin\收件日20220612 当天',
