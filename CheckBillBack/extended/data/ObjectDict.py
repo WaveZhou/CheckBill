@@ -1,7 +1,7 @@
 # -*- encoding: UTF-8 -*-
 # ---------------------------------import------------------------------------
-from extended.Interface import AbstractDataStructure
-from extended.Decoration import depreciated_method
+from CheckBillBack.extended.Interface import AbstractDataStructure
+from CheckBillBack.extended.Decoration import depreciated_method
 
 
 class ObjectDict(dict, AbstractDataStructure):
@@ -133,7 +133,7 @@ class ObjectDict(dict, AbstractDataStructure):
         elif isinstance(range_iterable, (str, int, float)):
             range_iterable = (range_iterable, )
         else:
-            from extended.Exceptions import ParamTypeError
+            from CheckBillBack.extended.Exceptions import ParamTypeError
             raise ParamTypeError('range_iterable', (set, frozenset, list, tuple), range_iterable)
 
         result = ObjectDict()
@@ -157,7 +157,7 @@ class ObjectDict(dict, AbstractDataStructure):
         if isinstance(exclude_iterable, (set, frozenset, list, tuple)):
             exclude_iterable = frozenset(exclude_iterable)
         else:
-            from extended.Exceptions import ParamTypeError
+            from CheckBillBack.extended.Exceptions import ParamTypeError
             raise ParamTypeError('exclude_iterable', (set, frozenset, list, tuple), exclude_iterable)
 
         result = ObjectDict()
@@ -268,7 +268,7 @@ class ObjectDict(dict, AbstractDataStructure):
         :param attr_tag: str
         :return: CountingDict
         """
-        from extended.data.CountingDict import CountingDict
+        from CheckBillBack.extended.data.CountingDict import CountingDict
 
         counted_dict = CountingDict()
 
@@ -280,7 +280,7 @@ class ObjectDict(dict, AbstractDataStructure):
     def count_attr_iterable(self, attr_tag: str):
         """对字典储存对象的属性列表中的对象计数 -> CountingDict"""
         from collections import Iterable
-        from extended.data.CountingDict import CountingDict
+        from CheckBillBack.extended.data.CountingDict import CountingDict
 
         counted_dict = CountingDict()
 

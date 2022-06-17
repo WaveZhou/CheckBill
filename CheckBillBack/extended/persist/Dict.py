@@ -4,8 +4,8 @@ import os
 
 from collections import Mapping, Sized
 
-from extended.Interface import AbstractPersistObject
-from extended.Interface import AbstractPersistStructure
+from CheckBillBack.extended.Interface import AbstractPersistObject
+from CheckBillBack.extended.Interface import AbstractPersistStructure
 
 
 class BasePersistDict(Mapping, Sized, AbstractPersistStructure):

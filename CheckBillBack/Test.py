@@ -1,16 +1,30 @@
 # _*_ coding: utf-8 _*_
 from CheckBillBack.Institution.impl.DongBei import DongBei
+str = '2020-25-35'
+res = "".join(str.split('-'))
+print(res)
 
 
-class A:
-    def __init__(self):
-        print('hh')
 
-    def speak(self):
-        print('woqu')
-class B(A):
-    def run(self):
-        print('paoqilao')
+
+
+
+
+
+
+
+
+
+
+# class A:
+#     def __init__(self):
+#         print('hh')
+#
+#     def speak(self):
+#         print('woqu')
+# class B(A):
+#     def run(self):
+#         print('paoqilao')
 # origin_dir = 'D:\估值专用邮箱数据\邮件账户分类缓存\收件日20220228 当天'
 # tf = Transform_FileName()
 # count = 0
@@ -32,8 +46,9 @@ class B(A):
 # xy = XingYe()
 # xy.load_file_content_for_date('兴业','普通')
 # DongBei
-institution_impl = locals()['DongBei']('东北', '普通')
-print(institution_impl)
+
+# institution_impl = locals()['DongBei']('东北', '普通')
+# print(institution_impl)
 # str = '国投安信期货账户'
 # belong = str[0:2]
 # type = str[-4:-2]

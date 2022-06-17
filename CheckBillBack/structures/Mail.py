@@ -6,7 +6,7 @@ poplib._MAXLINE = 20480
 from email.header import decode_header
 
 
-from extended.wrapper.Log import get_logger
+from CheckBillBack.extended.wrapper.Log import get_logger
 
 
 def decode_email_str(s: str):

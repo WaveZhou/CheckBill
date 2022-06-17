@@ -16,7 +16,7 @@ class DictObject(dict):
         if isinstance(pd_data, Series):
             return cls.from_dict(pd_data.to_dict())
         else:
-            from extended.Exceptions import ParamTypeError
+            from CheckBillBack.extended.Exceptions import ParamTypeError
             raise ParamTypeError('pd_data', 'pandas.Series', pd_data)
 
     @classmethod
@@ -58,7 +58,7 @@ class AbstractDataObject:
         if isinstance(pd_data, Series):
             return cls.from_outer_dict(pd_data.to_dict())
         else:
-            from extended.Exceptions import ParamTypeError
+            from CheckBillBack.extended.Exceptions import ParamTypeError
             raise ParamTypeError('pd_data', 'pandas.Series', pd_data)
 
     @classmethod

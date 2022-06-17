@@ -210,13 +210,13 @@
                 } else {
                     return obj.label
                 }
-            },
+          },
         //添加点击事件
         clickData(row, event, column) {
 　　　　　　console.log(row);
           console.log(event);
           console.log(column);
-     },
+        },
         // 初始页currentPage、初始每页数据数pagesize和数据data
         handleSizeChange: function (size) {
                 this.pagesize = size;

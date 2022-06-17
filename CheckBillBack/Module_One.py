@@ -9,14 +9,14 @@ import shutil
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from extended import get_logger
-from structures import Sqlite
-from extended.wrapper import MySQL
+from CheckBillBack.extended import get_logger
+from CheckBillBack.structures import Sqlite
+from CheckBillBack.extended.wrapper import MySQL
 
-from utils.MailClassification import classify_mail_contents
-from structures.MailDetail import ImapMailDetail
-from structures.MailReceiveInfo import MailReceiveInfo
-from structures.Tencent import parse_tencent_email_details
+from CheckBillBack.utils.MailClassification import classify_mail_contents
+from CheckBillBack.structures.MailDetail import ImapMailDetail
+from CheckBillBack.structures.MailReceiveInfo import MailReceiveInfo
+from CheckBillBack.structures.Tencent import parse_tencent_email_details
 
 imaplib._MAXLINE = 20000000
 
@@ -51,7 +51,7 @@ class ImapLoader(object):
                               'fj@jingjiukm.com', 'gzzy@jingjiukm.com', 'cjsc_tgjs@vip.163.com',
                               'xztgzhpt@xyzq.com.cn', 'tgjs@cjsc.com.cn', 'newservice@totodi.com', 'qscgb@tebon.com.cn',
                               'cwjz@tg.gtja.com', 'cpsj1@cjsc.com',
-                              'gxtggzhs@guosen.com.cn','ops-otc@gtjaqh.com']  # waves
+                              'gxtggzhs@guosen.com.cn', 'ops-otc@gtjaqh.com']  # waves
         self.log = get_logger(self.__class__.__name__)
         self.db = Sqlite(config.get('mail_db', os.path.join(self.root_path(), 'mails.db')))
         self.config = config
@@ -488,9 +488,11 @@ class ImapLoader(object):
 
 
 if __name__ == '__main__':
-    import pickle,schedule,time
+    import pickle, schedule, time
+
+
     def job():
-        #SINCE_DATE = datetime.date(2021, 11, 1)
+        # SINCE_DATE = datetime.date(2021, 11, 1)
         SINCE_DATE = datetime.date.today() - datetime.timedelta(days=5)
         settings = {
             'mail_bit_path': r'D:\估值专用邮箱数据\久铭\邮件IMAP二进制缓存',
@@ -498,7 +500,8 @@ if __name__ == '__main__':
             'mail_classification_path': r'D:\估值专用邮箱数据\久铭\邮件账户分类保存',
             'mail_db': r'D:\估值专用邮箱数据\久铭\估值专用邮箱缓存\jiuming_mails.db'
         }
-        settings.update(pickle.load(open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'jiuming.pick'), 'rb')))
+        settings.update(
+            pickle.load(open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'jiuming.pick'), 'rb')))
         loader = ImapLoader(settings)
         loader.update_mail_data_base(
             since_date=SINCE_DATE,
@@ -535,6 +538,8 @@ if __name__ == '__main__':
         )
 
         loader.log.info_running('本次运行结束', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+
     schedule.every(1).hour.do(job)
     while True:
         schedule.run_pending()
