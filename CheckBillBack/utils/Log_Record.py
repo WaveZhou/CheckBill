@@ -47,7 +47,7 @@ class Log(object):
 if __name__ == '__main__':
     message1 = 'zhangsan daoci yiyou'
     message2 = 'lisi daoci yiyou'
-
+    logger = Log('Send_Email')
     logger = Log('ROOT_WAVE')
     # logger.output_log({'file_name': r'D:\BackUp\bugOut\log.txt', 'message': message1})
     # logger.output_log({'file_name': r'D:\BackUp\bugOut\log.txt', 'message': message1})

@@ -4,9 +4,11 @@ import re
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from structures.MailDetail import ImapMailDetail
-from structures.MailReceiveInfo import MailReceiveInfo
-from extended.wrapper import List,Sqlite
+from CheckBillBack.structures.MailDetail import ImapMailDetail
+from CheckBillBack.structures.MailReceiveInfo import MailReceiveInfo
+
+from CheckBillBack.utils.Log_Record import Log
+from CheckBillBack.extended.wrapper import List,Sqlite
 #from structures import List, Sqlite
 
 
@@ -102,6 +104,10 @@ def classify_mail_contents(m_detail: ImapMailDetail, db: Sqlite):
             ins_list.extend(
                 db.session.query(MailReceiveInfo).filter_by(mail_account=mail_from_account.lower()).all())
     except NoResultFound:
+        logger = Log('Send_Email_One')
+        date_str = str(datetime.datetime.now().date())
+        date_str = "".join(date_str.split('-'))
+        logger.output_log({'file_name': r'D:\BackUp\bugOut\发件人邮箱未配置\{}log.txt'.format(date_str), 'message': m_detail.from_account})
         raise NotImplementedError('缺失发件人 {} 数据\n{}'.format(m_detail.from_account, m_detail.__repr__()))
 
     if len(ins_list) == 1:
@@ -178,6 +184,10 @@ def classify_mail_contents(m_detail: ImapMailDetail, db: Sqlite):
             # assert __parse_folder_type__(file_name) in folder_name, '{}\n{}'.format(file_name, m_detail.__repr__())
             classify_dict[file_name] = (date_file, folder_name)
     else:
+        logger = Log('Send_Email_Two')
+        date_str = str(datetime.datetime.now().date())
+        date_str = "".join(date_str.split('-'))
+        logger.output_log({'file_name': r'D:\BackUp\bugOut\发件人邮箱未配置\{}log.txt'.format(date_str), 'message': m_detail.from_account})
         raise NotImplementedError('缺失发件人 {} 数据\n{}'.format(m_detail.from_account, ins_list))
 
     # if m_detail.from_account in ('10000@qq.com', ):

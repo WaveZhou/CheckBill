@@ -5,7 +5,7 @@ from email import message_from_bytes, message_from_string
 from email.message import Message
 from email.utils import parseaddr, parsedate_to_datetime
 from email.header import decode_header
-from structures.Mail import decode_email_str
+from CheckBillBack.structures.Mail import decode_email_str
 
 
 def parse_tencent_email_content_part(msg_part: Message):

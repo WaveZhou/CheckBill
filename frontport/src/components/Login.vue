@@ -79,7 +79,8 @@
                 const login_name =JSON.parse(resp.data.user_obj)['loginname']
                 const user_id = JSON.parse(resp.data.user_obj)['user_id']
 
-                if (flag == 'yes'){
+                if (flag === 'yes'){
+                  debugger
                   let routerJump = _this.$router.resolve({path:'DataManageCenter',query:{login_name:login_name,user_id:user_id,token:token}});
                   //_this.$router.push({name:"DataManageCenter",params:{login_name:login_name,user_id:user_id,token:token}})
                   window.open(routerJump.href,'_blank');

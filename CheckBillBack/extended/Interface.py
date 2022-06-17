@@ -1,6 +1,6 @@
 # -*- encoding: UTF-8 -*-
 # ---------------------------------import------------------------------------
-from extended.Decoration import depreciated_method
+from CheckBillBack.extended.Decoration import depreciated_method
 
 
 class AbstractDataStructure:

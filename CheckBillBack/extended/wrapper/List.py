@@ -1,6 +1,6 @@
 # -*- encoding: UTF-8 -*-
 # ---------------------------------import------------------------------------
-from extended.Interface import AbstractDataStructure
+from CheckBillBack.extended.Interface import AbstractDataStructure
 
 
 class List(list, AbstractDataStructure):

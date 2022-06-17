@@ -43,6 +43,9 @@ urlpatterns = [
     path('update_file_content',account_views.update_file),
     path('addFile',account_views.add_file),
     path('get_others_info',account_views.get_others_info),
-    path('get_duplicated_account',account_views.get_duplicated_account)
+    path('get_duplicated_account',account_views.get_duplicated_account),
+    path('first_step',user_view.first_step),
+    path('two_step',user_view.two_step),
+    path('three_step',user_view.three_step)
     #path('get_excel_bills',statement_views.get_excel)
 ]
