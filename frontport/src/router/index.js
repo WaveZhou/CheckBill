@@ -7,6 +7,7 @@ import Bills from "../components/Bills";
 import AccountInformation from "../components/AccountInformation";
 import IntegratedManage from "../components/IntegratedManage";
 import AccountDetail from "../components/AccountDetail";
+import EmailConfig from "../components/EmailConfig";
 
 Vue.use(Router)
 
@@ -63,10 +64,16 @@ export default new Router({
       name:'IntegratedManage',
       component: IntegratedManage,
       meta: {
-        title: '综合管理'
+        title: '对账单日常操作流程'
       }
-
-
+    },
+       {
+      path: '/EmailConfig',
+      name:'EmailConfig',
+      component: EmailConfig,
+      meta: {
+        title: '邮箱地址配置'
+      }
     },
   ],
     mode:'history',

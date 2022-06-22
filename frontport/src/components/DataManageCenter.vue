@@ -30,15 +30,15 @@
           href="#"
           target="_blank"
         >
-          净值查询
+          对账单日常操作流程
         </a>
       </li>
-      <li>
+      <li @click="email_config">
         <a
           href="#"
           target="_blank"
         >
-          持仓汇总查询
+          邮箱地址配置
         </a>
       </li>
       <li>
@@ -149,6 +149,10 @@ export default {
       integrated_manage(){
         let jump_center_page = this.$router.resolve({path:"IntegratedManage"})
         window.open(jump_center_page.href,'_blank');
+      },
+      email_config(){
+        let jump_email_page = this.$router.resolve({path:"EmailConfig"})
+        window.open(jump_email_page.href,'_blank');
       }
     },
 

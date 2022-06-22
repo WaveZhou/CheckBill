@@ -188,6 +188,7 @@
     <el-form-item label="产品名称" prop="product">
       <el-input v-model="editForm.product" placeholder="请输入基金产品名称"></el-input>
     </el-form-item>
+
     <el-form-item label="证券机构" prop="belong">
       <el-input v-model="editForm.belong" placeholder="请输入券商机构名称"></el-input>
     </el-form-item>

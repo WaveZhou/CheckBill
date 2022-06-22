@@ -17,7 +17,7 @@ from CheckBillBack.utils.MailClassification import classify_mail_contents
 from CheckBillBack.structures.MailDetail import ImapMailDetail
 from CheckBillBack.structures.MailReceiveInfo import MailReceiveInfo
 from CheckBillBack.structures.Tencent import parse_tencent_email_details
-
+import sqlite3
 imaplib._MAXLINE = 20000000
 
 
@@ -54,6 +54,7 @@ class ImapLoader(object):
                               'gxtggzhs@guosen.com.cn', 'ops-otc@gtjaqh.com']  # waves
         self.log = get_logger(self.__class__.__name__)
         self.db = Sqlite(config.get('mail_db', os.path.join(self.root_path(), 'mails.db')))
+        self.sqlite3_con = sqlite3.connect(config.get('mail_db', os.path.join(self.root_path(), 'mails.db')))
         self.config = config
 
         # ---- [预处理] ----

@@ -5,14 +5,15 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import HeyUI from 'heyui';
+import HeyUI from 'heyui'
 
-Vue.use(ElementUI)
+Vue.use(ElementUI);
 Vue.use(HeyUI);
 
 
-Vue.config.productionTip = false
-
+Vue.config.productionTip = false;
+import VueWechatTitle from 'vue-wechat-title'
+Vue.use(VueWechatTitle);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -20,10 +21,15 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
-router.beforeEach((to, from, next) => {
-  /* 路由发生变化修改页面title */
-  if (to.meta.title) {
-    document.title = to.meta.title
-  }
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   /* 路由发生变化修改页面title */
+//   if (to.meta.title) {
+//     document.title = to.meta.title
+//   }
+//   next()
+//   })
+// router.afterEach(to => {
+// 	// 设置title
+// 	document.title = to.meta.title;
+// })
+

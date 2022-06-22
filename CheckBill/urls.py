@@ -46,6 +46,12 @@ urlpatterns = [
     path('get_duplicated_account',account_views.get_duplicated_account),
     path('first_step',user_view.first_step),
     path('two_step',user_view.two_step),
-    path('three_step',user_view.three_step)
+    path('three_step',user_view.three_step),
+    path('get_email_config',statement_views.get_email_config),
+    path('add_email_config',statement_views.add_email_config),
+    path('search_jiuming',statement_views.search_jiuming),
+    path('search_jingjiu',statement_views.search_jingjiu),
+    path('update_jiuming_email_config',statement_views.update_jiuming_email_config),
+    path('delete_jiuming_email_config',statement_views.delete_jiuming_email_config)
     #path('get_excel_bills',statement_views.get_excel)
 ]

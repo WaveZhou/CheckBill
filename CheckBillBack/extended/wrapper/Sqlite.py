@@ -50,6 +50,10 @@ class Sqlite(object):
         self.session.execute(clause, params=params,)
         self.session.flush()
 
+    # def query(self,clase:str):
+    #     self.session.query(clase)
+    #     self.session.flush()
+
     @staticmethod
     def map(obj_type: type, table_def: Table, create_table: bool = True):
         from sqlalchemy.exc import ArgumentError
