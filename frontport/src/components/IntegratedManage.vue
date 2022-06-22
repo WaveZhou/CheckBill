@@ -21,47 +21,14 @@
  <br/>
   <p>
     <el-tooltip class="item" effect="dark" content="把origin目录下的原始对账单数据根据交易日，按产品名和券商名分别进行归档整理" placement="top-start">
-        <el-button type="info" @click="thirdStep()">第 三 步</el-button>
+        <el-button type="info" @click="thirdStep()" id="three">第 三 步</el-button>
     </el-tooltip>
      <el-input v-model="input_3" placeholder="请输入内容" style="width: 447px"></el-input>
   </p>
 
 
 </el-row>
-<!--<el-row>-->
-<!--  -->
-<!--</el-row>-->
 
-<!--   <el-col :span="1">-->
-<!--      <el-button-->
-<!--        type="success"-->
-<!--        @click="addCreate"-->
-<!--        @keydown.enter="adddata"-->
-
-<!--        size="mini"-->
-<!--      >第一步：把邮件中的附件放置在服务器的邮件账户分类保存目录中</el-button>-->
-<!--    </el-col>-->
-
-
-<!--    <el-col :span="1">
-      <el-button
-        type="success"
-        @click="addCreate"
-        @keydown.enter="adddata"
-
-        size="mini"
-      >第二步：把服务器的邮件账户分类保存目录中的文件复制到origin目录</el-button>
-    </el-col>
-
-      <el-col :span="1">
-      <el-button
-        type="success"
-        @click="addCreate"
-        @keydown.enter="adddata"
-
-        size="mini"
-      >第三步：把origin目录下的原始对账单数据根据交易日，按产品名和券商名分别进行归档整理</el-button>
-    </el-col>-->
 
 
 </template>
@@ -74,16 +41,11 @@
   export default {
     name: "IntegratedManage",
     data() {
-      const item = {
-        date: '2021-11-17',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      };
       return {
         input_1 : '',
         input_2 : '',
         input_3 : '',
-        tableData: Array(20).fill(item)
+
         //icon="el-icon-circle-plus-outline"
       }
     },
@@ -142,10 +104,12 @@
         this.input_3 = '处理中。。。。。。'
         axios.get("http://127.0.0.1:8000/three_step").then(res =>{
              if(res.data.code === '200'){
-                this.input_3 = rss.data.message;
+
+                this.input_3 = res.data.message;
                 this.$message.success('可去对账单未到页面查看了')
               }else if(res.data.code === '302'){
-                this.input_3 = this.data.message;
+                console.log(res.data.message)
+                this.input_3 = res.data.message;
                 this.$message.error("报错信息提交给相关技术处理")
 
              }

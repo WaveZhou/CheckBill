@@ -37,7 +37,7 @@ def login(request):
 
     date = {'flag': date_flag, 'msg': date_msg, 'token': col_token}
     user_str = user.__str__()
-    user_obj = json.loads(user_str)  # 把已经编码好的json字符串编码为dict类型的python对象
+    user_obj = json.loads(user_str)  # 把已经编码好的json字符串 编码为 dict类型的python对象
     print(user_obj)
 
     user_json = json.dumps(user_obj)  # 转变成json格式的字符串

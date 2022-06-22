@@ -197,6 +197,7 @@ class Module_Three():
                         continue
                     if os.path.isdir(os.path.join(self.settings['origin_path'], institution)):
                         for file_or_rar in os.listdir(os.path.join(self.settings['origin_path'], institution)):
+                            raise NotImplementedError
                             if file_or_rar.startswith('已处理'):
                                 continue
                             if file_or_rar.endswith('rar') or file_or_rar.endswith('RAR') or file_or_rar.endswith(

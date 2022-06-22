@@ -76,36 +76,6 @@ def save_pagesize(request):
     return JsonResponse({'code': '200', 'message': '保存成功', 'token': token})
 
 
-# def update_person(request):
-#     #根据条件查询后再修改和保存
-#     # zhangsan = Persion.objects.get(first_name='张')
-#     # zhangsan.last_name='三丰'
-#     # zhangsan.save()
-#     #直接修改所有数据
-#     Persion.objects.all().update(first_name='雷')
-#     return HttpResponse('修改数据成功')
-# def delete_person(request):
-#     Persion.objects.get(last_name='三丰').delete()
-#     return HttpResponse('数据删除成功')
-# def login(request):
-#     username = request.POST.get("username")
-#     password = request.POST.get("password")
-#     print("username:"+str(username))
-#     print("password:"+str(password))
-#     try:
-#         user = Person.objects.get(first_name=username)
-#     except:
-#         date = {'flag': 'no', "msg": "no to user"}
-#         return JsonResponse({'request': date})
-#     if password == user.last_name:
-#         date_msg = "登陆成功"
-#         date_flag = "yes"
-#         print("成功")
-#     else:
-#         date_msg = "密码输入错误"
-#         date_flag = "no"
-#     date = {'flag': date_flag, 'msg': date_msg}
-#     return JsonResponse({'request': date})
 def job(request):
     import datetime
     SINCE_DATE = datetime.date.today() - datetime.timedelta(days=5)
