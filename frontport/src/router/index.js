@@ -26,7 +26,7 @@ export default new Router({
       name:'Index',
       component:index,
       meta: {
-        title: '导航'
+        title: 'demo界面'
       }
     },
     {

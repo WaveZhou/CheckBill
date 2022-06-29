@@ -31,7 +31,9 @@ def login(request):
         # httpresponse.set_cookie("login_user",str(request.session['login_user'].user_id))
         date_flag = "yes"
         print("成功")
+
     else:
+        col_token = ""
         date_msg = "密码输入错误"
         date_flag = "no"
 

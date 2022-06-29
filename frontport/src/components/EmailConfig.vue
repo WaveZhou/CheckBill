@@ -226,7 +226,7 @@ export default {
   },
   methods :{
         initiateConfig(){
-           axios.get("http://127.0.0.1:8000/get_email_config").then(res=>{
+           axios.get("http://192.168.1.151:8000/get_email_config").then(res=>{
               if(res.data.status_code === 200){
                   this.jiuming_tableData = res.data.result_list_jiuming;
                   this.jingjiu_tableData = res.data.result_list_jingjiu;
@@ -248,12 +248,12 @@ export default {
           let _this = this;
           this.$confirm("确认删除吗").then(
             _ =>{
-              axios.get("http://127.0.0.1:8000/delete_jiuming_email_config?mail_account="+row['mail_account']+"&institution="+row['institution']+"&flag="+flag).then(
+              axios.get("http://192.168.1.151:8000/delete_jiuming_email_config?mail_account="+row['mail_account']+"&institution="+row['institution']+"&flag="+flag).then(
                 res => {
                   if(res.data.status_code === 200){
-                    _this.$message.success(res.data.message)
                     if( flag === '1'){
                       _this.search_jiuming();
+
                     }else {
                       _this.search_jingjiu();
                     }
@@ -280,7 +280,7 @@ export default {
 
       this.$refs[formName].validate((valid) => {
         if(valid){
-          axios.post('http://127.0.0.1:8000/update_jiuming_email_config',this.editForm).then(res => {
+          axios.post('http://192.168.1.151:8000/update_jiuming_email_config',this.editForm).then(res => {
             if(res.data.status_code === 200){
               this.$message.success(res.data.message);
             }else if(res.data.status_code === 302){
@@ -306,7 +306,7 @@ export default {
              // 初始页currentPage、初始每页数据数pagesize和数据data
         handleSizeChangeJiu: function(size) {
                 this.pagesize_jiu = size;
-                // axios.get("http://127.0.0.1:8000/save_pagesize?pagesize="+this.pagesize+"&token="+this.token).then(res=>{
+                // axios.get("http://192.168.1.151:8000/save_pagesize?pagesize="+this.pagesize+"&token="+this.token).then(res=>{
                 //   if(res.data.code=='200'){
                 //     //alert(res.data.message);
                 //   }
@@ -320,7 +320,7 @@ export default {
         },
         handleSizeChangeJing: function(size) {
                 this.pagesize_jing = size;
-                // axios.get("http://127.0.0.1:8000/save_pagesize?pagesize="+this.pagesize+"&token="+this.token).then(res=>{
+                // axios.get("http://192.168.1.151:8000/save_pagesize?pagesize="+this.pagesize+"&token="+this.token).then(res=>{
                 //   if(res.data.code=='200'){
                 //     //alert(res.data.message);
                 //   }
@@ -343,7 +343,7 @@ export default {
               //准备把新增数据发往后台
           this.$refs[formName].validate((valid) => {
             if(valid){
-              axios.post('http://127.0.0.1:8000/add_email_config?flag='+this.ruleForm.flag,this.ruleForm).then(res => {
+              axios.post('http://192.168.1.151:8000/add_email_config?flag='+this.ruleForm.flag,this.ruleForm).then(res => {
                 if(res.data.status_code === 200){
                   this.emailAddDialog = false;
                   this.$message.success(res.data.message);
@@ -369,20 +369,22 @@ export default {
 
         search_jiuming(){
           let _this = this
-          axios.get("http://127.0.0.1:8000/search_jiuming?search_words="+this.jiuming_input).then(res=>{
+          axios.get("http://192.168.1.151:8000/search_jiuming?search_words="+this.jiuming_input).then(res=>{
                 if(res.data.status_code === 200){
                    _this.$message.success(res.data.message);
-                  _this.jiuming_tableData = res.data.result_list;
+                   _this.jiuming_tableData = res.data.result_list;
+                   // _this.initiateConfig();
                 }
 
           }).catch()
         },
         search_jingjiu(){
            let _this = this
-          axios.get("http://127.0.0.1:8000/search_jingjiu?search_words="+this.jiuming_input).then(res=>{
+          axios.get("http://192.168.1.151:8000/search_jingjiu?search_words="+this.jiuming_input).then(res=>{
                 if(res.data.status_code === 200){
                   _this.$message.success(res.data.message);
                   _this.jingjiu_tableData = res.data.result_list;
+                  // _this.initiateConfig();
                 }
 
           }).catch()

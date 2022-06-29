@@ -66,8 +66,7 @@
           if (valid){
             const _this = this
             var data = Qs.stringify({"username":this.ruleForm.username,"password":this.ruleForm.password})
-            console.log("data:",data)
-            axios.post("http://127.0.0.1:8000",data).then(
+            axios.post("http://192.168.1.151:8000",data).then(
               function (resp) {
                 //alert(resp.status);
                 console.log("resp:");
@@ -75,17 +74,15 @@
                // _this.$router.push("/DataManageCenter")
                 const flag = resp.data.request['flag']
                 const token = resp.data.request['token']
-                console.log(resp.data.request)
-                const login_name =JSON.parse(resp.data.user_obj)['loginname']
-                const user_id = JSON.parse(resp.data.user_obj)['user_id']
 
                 if (flag === 'yes'){
-                  debugger
+                  const login_name =JSON.parse(resp.data.user_obj)['loginname']
+                  const user_id = JSON.parse(resp.data.user_obj)['user_id']
                   let routerJump = _this.$router.resolve({path:'DataManageCenter',query:{login_name:login_name,user_id:user_id,token:token}});
                   //_this.$router.push({name:"DataManageCenter",params:{login_name:login_name,user_id:user_id,token:token}})
                   window.open(routerJump.href,'_blank');
-                }else {
-                  alert("请输入正确的用户名和密码")
+                }else if (flag === 'no') {
+                  _this.$message.warning("请输入正确的用户名和密码");
                 }
               },function (error) {
                   console.log(error)

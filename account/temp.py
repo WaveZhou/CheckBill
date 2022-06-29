@@ -5,7 +5,7 @@ import pymysql
 # 打开数据库连接
 from utils.MysqlProxy import MysqlProxy
 
-db = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='123456', db='jm_statement', charset='utf8')
+db = pymysql.connect(host='192.168.1.151', port=3306, user='root', passwd='123456', db='jm_statement', charset='utf8')
 cursor = db.cursor()  # 使用cursor()方法获取操作游标
 
 # dict={'静久康铭（上海）投资管理有限公司－静康创新稳健1号私募证券投资基金-客户对账单-2100818998_20211124.xlsx':'80'}
