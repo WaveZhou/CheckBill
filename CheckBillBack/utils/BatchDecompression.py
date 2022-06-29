@@ -1,7 +1,7 @@
 # coding=utf-8
 import rarfile, os, re, shutil, zipfile
 from os import listdir
-
+from OperateFile import *
 # _*_ coding: utf-8 _*_
 from CheckBillBack.utils.Transform_FileName import Transform_FileName
 
@@ -80,7 +80,8 @@ class BatchDecompression(object):
         for fd in foders_tmp:
             if fd.endswith('rar') or fd.endswith('zip'):
                 if self.flag:
-                    os.remove(os.path.join(self.target, fd))
+                    #os.remove(os.path.join(self.target, fd))
+                    rename_to_new_dir(os.path.join(self.target, fd),os.path.join(self.target),'已处理_'+str(fd),2,False)
                     folders.remove(fd)
                 continue
             elif os.path.isfile(os.path.join(self.target, fd)):

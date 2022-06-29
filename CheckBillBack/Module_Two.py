@@ -66,12 +66,13 @@ if __name__ == '__main__':
     SINCE_DATE_INPUT = datetime.datetime.today() - datetime.timedelta(days=input_day)
     print("从这一天起：", SINCE_DATE_INPUT.date())
     basic_setting = {'origin_jiuming': r'D:\估值专用邮箱数据\久铭\邮件账户分类保存',
-                     'origin_bills': r'D:\整理券商对账单\origin'}
+                     'origin_bills': r'D:\BackUp\origin'}
     #bian_li(input_day, SINCE_DATE_INPUT, basic_setting)
     mt = Module_Tow()
     mt.bian_li(input_day,SINCE_DATE_INPUT,basic_setting)
+
     basic_setting = {'origin_jiuming': r'D:\估值专用邮箱数据\静久\邮件账户分类保存',
-                     'origin_bills': r'D:\整理券商对账单\origin'}
+                     'origin_bills': r'D:\BackUp\origin'}
     #bian_li(input_day, SINCE_DATE_INPUT, basic_setting)
     mt.bian_li(input_day, SINCE_DATE_INPUT, basic_setting)
     log = Log('Copy_Files')

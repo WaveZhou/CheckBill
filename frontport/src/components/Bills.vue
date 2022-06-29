@@ -220,7 +220,7 @@
         // 初始页currentPage、初始每页数据数pagesize和数据data
         handleSizeChange: function (size) {
                 this.pagesize = size;
-                axios.get("http://127.0.0.1:8000/save_pagesize?pagesize="+this.pagesize+"&token="+this.token).then(res=>{
+                axios.get("http://192.168.1.151:8000/save_pagesize?pagesize="+this.pagesize+"&token="+this.token).then(res=>{
                   if(res.data.code=='200'){
                     //alert(res.data.message);
                   }
@@ -236,7 +236,7 @@
            const _this = this;
            //_this.token = _this.$route.params.token;
           _this.token = JSON.parse(this.$route.query.token);
-            axios.get("http://127.0.0.1:8000/get_bills?account_type="+""+"&end_time="+""+"&product_name="+""+"&belong_name="+""+"&department_name="+""+"&token="+_this.token).then(res => {
+            axios.get("http://192.168.1.151:8000/get_bills?account_type="+""+"&end_time="+""+"&product_name="+""+"&belong_name="+""+"&department_name="+""+"&token="+_this.token).then(res => {
               //这是从本地请求的数据接口
                 if(res.data.status_code === '200'){
 
@@ -253,7 +253,7 @@
             })
         },
        handleComboBox(){
-            axios.get("http://127.0.0.1:8000/get_boxs").then(res=>{
+            axios.get("http://192.168.1.151:8000/get_boxs").then(res=>{
                 //从券商下拉列表回的数据
                 this.option32 = res.data.belong;
                 this.optionA5 = res.data.type_list;
@@ -288,7 +288,7 @@
           let product_name = this.product_name;
           let department_name = this.department_name;
 
-          axios.get("http://127.0.0.1:8000/get_bills?account_type="+str_account_type+"&end_time="+end_time+"&product_name="+product_name+"&belong_name="+str_belong_name+"&department_name="+department_name+"&token="+this.token).then(res => {
+          axios.get("http://192.168.1.151:8000/get_bills?account_type="+str_account_type+"&end_time="+end_time+"&product_name="+product_name+"&belong_name="+str_belong_name+"&department_name="+department_name+"&token="+this.token).then(res => {
             this.billList = res.data.bill_list
           })
           return true;
@@ -297,7 +297,7 @@
           let print_list = this.billList
           let choice_time = this.handleTime(this.value2,"yyyy-MM-dd");
 
-            axios.post("http://127.0.0.1:8000/get_print_bills?choice_time="+choice_time,print_list).then(res=>{
+            axios.post("http://192.168.1.151:8000/get_print_bills?choice_time="+choice_time,print_list).then(res=>{
             let m_url = res.data.url;
             window.location.href=m_url;
           }).catch(error=>{

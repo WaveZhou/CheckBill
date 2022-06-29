@@ -1,5 +1,5 @@
 # -*- encoding: UTF-8 -*-
-import datetime
+import datetime,os
 import re
 
 from sqlalchemy.orm.exc import NoResultFound
@@ -104,11 +104,18 @@ def classify_mail_contents(m_detail: ImapMailDetail, db: Sqlite):
             ins_list.extend(
                 db.session.query(MailReceiveInfo).filter_by(mail_account=mail_from_account.lower()).all())
     except NoResultFound:
-        logger = Log('Send_Email_One')
+        logger = Log('Send_Email_Two')
         date_str = str(datetime.datetime.now().date())
         date_str = "".join(date_str.split('-'))
-        logger.output_log({'file_name': r'D:\BackUp\bugOut\发件人邮箱未配置\{}log.txt'.format(date_str), 'message': m_detail.from_account})
-        raise NotImplementedError('缺失发件人 {} 数据\n{}'.format(m_detail.from_account, m_detail.__repr__()))
+        base_dir = r'D:\整理券商对账单\bugOut'
+        box_str = str(db.engine.url).split(os.path.sep)[-3]
+        subject_words = box_str + '邮箱发件人未配置'
+        bug_out_path = os.path.join(base_dir, subject_words)
+        if not os.path.exists(bug_out_path):
+            os.makedirs(bug_out_path, exist_ok=True)
+        bug_out_path = bug_out_path + r'\{}-log.txt'.format(date_str)
+        logger.output_log({'file_name': bug_out_path, 'message': "缺失发件人 {} 账户数据".format( m_detail.from_account)})
+        raise NotImplementedError(box_str+'缺失发件人 {} 数据\n{}'.format(m_detail.from_account, m_detail.__repr__()))
 
     if len(ins_list) == 1:
         mail_rece = ins_list[0]
@@ -187,8 +194,15 @@ def classify_mail_contents(m_detail: ImapMailDetail, db: Sqlite):
         logger = Log('Send_Email_Two')
         date_str = str(datetime.datetime.now().date())
         date_str = "".join(date_str.split('-'))
-        logger.output_log({'file_name': r'D:\BackUp\bugOut\发件人邮箱未配置\{}log.txt'.format(date_str), 'message': m_detail.from_account})
-        raise NotImplementedError('缺失发件人 {} 数据\n{}'.format(m_detail.from_account, ins_list))
+        base_dir = r'D:\整理券商对账单\bugOut'
+        box_str = str(db.engine.url).split(os.path.sep)[-3]
+        subject_words = box_str + '邮箱发件人未配置'
+        bug_out_path = os.path.join(base_dir, subject_words)
+        if not os.path.exists(bug_out_path):
+            os.makedirs(bug_out_path, exist_ok=True)
+        bug_out_path = bug_out_path + r'\{}-log.txt'.format(date_str)
+        logger.output_log({'file_name': bug_out_path, 'message': "缺失发件人 {} 账户数据".format(m_detail.from_account)})
+        raise NotImplementedError(box_str+'缺失发件人 {} 数据\n{}'.format(m_detail.from_account, m_detail.__repr__()))
 
     # if m_detail.from_account in ('10000@qq.com', ):
     #     return classify_dict

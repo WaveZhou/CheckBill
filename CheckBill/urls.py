@@ -47,11 +47,14 @@ urlpatterns = [
     path('first_step',user_view.first_step),
     path('two_step',user_view.two_step),
     path('three_step',user_view.three_step),
+    path('re_match',user_view.re_match),
+    path('get_init_load_finish_time',user_view.get_init_load_finish_time),
     path('get_email_config',statement_views.get_email_config),
     path('add_email_config',statement_views.add_email_config),
     path('search_jiuming',statement_views.search_jiuming),
     path('search_jingjiu',statement_views.search_jingjiu),
     path('update_jiuming_email_config',statement_views.update_jiuming_email_config),
-    path('delete_jiuming_email_config',statement_views.delete_jiuming_email_config)
+    path('delete_jiuming_email_config',statement_views.delete_jiuming_email_config),
+
     #path('get_excel_bills',statement_views.get_excel)
 ]

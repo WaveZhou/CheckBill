@@ -19,6 +19,8 @@ def get_bills(request):
                 login_user = lu[token]
     except TypeError:
         return JsonResponse({"status_code": '302', "message": "登录已失效或被刷掉，请先登录"})
+    except KeyError:
+        return JsonResponse({"status_code": '302', "message": "登录已失效或被刷掉，请先登录"})
     if login_user is None:
         return JsonResponse({"status_code": '302', "message": "请先登录"})
     mp = MysqlProxy()

@@ -4,6 +4,12 @@ import os
 import sys
 from django.core.cache import cache
 
+
+class a:
+    def __init__(self):
+        print("hh")
+
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CheckBill.settings')
@@ -16,15 +22,25 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-    # settings = {
-    #             'mail_bit_path': r'D:\估值专用邮箱数据\久铭\邮件IMAP二进制缓存',
-    #             'mail_content_path': r'D:\估值专用邮箱数据\久铭\邮件IMAP解码数据缓存',
-    #             'mail_classification_path': r'D:\估值专用邮箱数据\久铭\邮件账户分类保存',
-    #             'mail_db': r'D:\估值专用邮箱数据\久铭\估值专用邮箱缓存\jiuming_mails.db'
-    #         }
-    # cache.set('jiuming_set', settings, 60 * 60 * 24)
-    # res = cache.get('jiuming_set')
+
+    #
+    # cache.set('flag', 0, 60 * 60 * 24)
+    # res = cache.get('flag')
+
+
+    # a_1  = a()
+    # a_2 = a()
+    #cache.delete('work_status')
+    # cache.set('flag', a_1, 60 * 60 * 24)
+    # res_1 = cache.get('flag')
+    # print(hash(res_1))
+    # cache.set('flag', a_1, 60 * 60 * 24)
+    # res_2 = cache.get('flag')
+    # print(hash(res_2))
+    # res = cache.get('flag')
     # print(res)
+    # print(type(res))
+
 
 if __name__ == '__main__':
     main()

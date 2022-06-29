@@ -6,7 +6,7 @@
 
     <h1>{{ msg }}</h1>
     <hr style="border: #42b983" color="orange" size="5">
-    <h2>可点击跳转到对应链接，目前仅对账单可行</h2>
+    <h2>前四个链接皆可正常跳转</h2>
 
     <ul>
       <li @click="query_bills">
@@ -41,7 +41,7 @@
           邮箱地址配置
         </a>
       </li>
-      <li>
+      <li @click="demostrate">
         <a
           href="#"
           target="_blank"
@@ -113,7 +113,7 @@ export default {
     const _this = this;
     this.token = _this.$route.query.token;
     debugger;
-    axios.get("http://127.0.0.1:8000/get_users?token="+this.token).then(res=>{
+    axios.get("http://192.168.1.151:8000/get_users?token="+this.token).then(res=>{
       //alert(res.data.user_obj.user_name);
 
       if(res.data.status_code === '302'){
@@ -143,16 +143,20 @@ export default {
         window.open(jump_bills_page.href,'_blank');
       },
       manage_accountinfomation(){
-        let jump_account_page = this.$router.resolve({path:"AccountInformation"})
+        let jump_account_page = this.$router.resolve({path:"AccountInformation"});
         window.open(jump_account_page.href,'_blank');
       },
       integrated_manage(){
-        let jump_center_page = this.$router.resolve({path:"IntegratedManage"})
+        let jump_center_page = this.$router.resolve({path:"IntegratedManage"});
         window.open(jump_center_page.href,'_blank');
       },
       email_config(){
-        let jump_email_page = this.$router.resolve({path:"EmailConfig"})
+        let jump_email_page = this.$router.resolve({path:"EmailConfig"});
         window.open(jump_email_page.href,'_blank');
+      },
+      demostrate(){
+        let Jump_demo_page = this.$router.resolve({path:"Index"});
+        window.open(Jump_demo_page.href,'_blank');
       }
     },
 
@@ -175,6 +179,7 @@ li {
 }
 a {
   color: #42b983;
+  text-decoration: none;
 }
 .login_person{
   float: left;

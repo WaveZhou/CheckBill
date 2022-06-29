@@ -52,8 +52,8 @@ def get_print_bills(request):
     file_name = "未到对账单账户信息{0}.xlsx".format(choice_time)
     save_unit = save_dir + file_name
     wb.save(save_unit)
-    url = "http://127.0.0.1:8000/" + sub_dir + file_name
-    # url = 'http://127.0.0.1:8000/'+
+    url = "http://192.168.1.151:8000/" + sub_dir + file_name
+    # url = 'http://192.168.1.151:8000/'+
     # #applicationnd.openxmlformats-officedocument.spreadsheetml.sheet
     # response = HttpResponse(content=save_virtual_workbook(wb),content_type='applicationnd.openxmlformats-officedocument.spreadsheetml.sheet')
     # # 给返回的文件命名
@@ -245,7 +245,7 @@ def delete_jiuming_email_config(request):
 #     print("66666666666666666")
 #     a = "CheckBill/static/"
 #     save_path = a + "未到对账单账户信息{0}.xlsx".format("2021-11-01")
-#     url = "http://127.0.0.1:8000/"+save_path
+#     url = "http://192.168.1.151:8000/"+save_path
 #     print(url)
 #     response = {
 #         'url':url,
@@ -266,6 +266,3 @@ def delete_jiuming_email_config(request):
 #
 #     return response
 
-
-# def test(request):
-#      # 为了使前端获取到Content-Disposition属性

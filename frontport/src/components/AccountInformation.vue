@@ -472,7 +472,7 @@ export default {
         // 初始页currentPage、初始每页数据数pagesize和数据data
         handleSizeChange: function (size) {
                 this.pagesize = size;
-                // axios.get("http://127.0.0.1:8000/save_pagesize?pagesize="+this.pagesize+"&token="+this.token).then(res=>{
+                // axios.get("http://192.168.1.151:8000/save_pagesize?pagesize="+this.pagesize+"&token="+this.token).then(res=>{
                 //   if(res.data.code=='200'){
                 //     //alert(res.data.message);
                 //   }
@@ -530,7 +530,7 @@ export default {
           params.append('belong',belong);
           params.append('type',type);
           params.append('account',account);
-          axios.post('http://127.0.0.1:8000/get_duplicated_account',params).then(
+          axios.post('http://192.168.1.151:8000/get_duplicated_account',params).then(
             res => {
               if(res.data.account_result !== null){
                 this.$refs['ruleForm'].resetFields();
@@ -545,7 +545,7 @@ export default {
           const params = new URLSearchParams();
           params.append('business',business);
           params.append('contact',contact);
-          axios.post('http://127.0.0.1:8000/get_others_info',params).then(
+          axios.post('http://192.168.1.151:8000/get_others_info',params).then(
             res => {
               console.log(res.data.message);
               console.log(res.data.contact_result);
@@ -568,7 +568,7 @@ export default {
 
       this.$refs[formName].validate((valid) => {
         if(valid){
-          axios.post('http://127.0.0.1:8000/update_account',this.editForm).then(res => {
+          axios.post('http://192.168.1.151:8000/update_account',this.editForm).then(res => {
             this.$message.success("数据修改成功")
             this.dialogFormVisible = false;
             this.initTable();
@@ -600,7 +600,7 @@ export default {
           //准备把新增数据发往后台
       this.$refs[formName].validate((valid) => {
         if(valid){
-          axios.post('http://127.0.0.1:8000/add_account',this.ruleForm).then(res => {
+          axios.post('http://192.168.1.151:8000/add_account',this.ruleForm).then(res => {
             this.$message.success("数据新增成功");
             this.initTable();
             this.dialogFormVisibles = false;
@@ -650,7 +650,7 @@ export default {
            const _this = this;
            //_this.token = _this.$route.params.token;
           _this.token = JSON.parse(this.$route.query.token);
-            axios.get("http://127.0.0.1:8000/get_bills?account_type="+""+"&end_time="+""+"&product_name="+""+"&belong_name="+""+"&department_name="+""+"&token="+_this.token).then(res => {
+            axios.get("http://192.168.1.151:8000/get_bills?account_type="+""+"&end_time="+""+"&product_name="+""+"&belong_name="+""+"&department_name="+""+"&token="+_this.token).then(res => {
               //这是从本地请求的数据接口
                 if(res.data.status_code === '200'){
                   this.value2 = res.data.t2_day;
@@ -668,7 +668,7 @@ export default {
     initTable(){
         const _this = this;
         //_this.token = JSON.parse(this.$route.query.token);
-        axios.get("http://127.0.0.1:8000/get_accounts?token="+'123456').then( res => {
+        axios.get("http://192.168.1.151:8000/get_accounts?token="+'123456').then( res => {
         if(res.data.status_code === '200'){
             _this.tableData = res.data.account_list;
             _this.tableData_back = res.data.account_list;

@@ -133,7 +133,7 @@ name: "AccountDetail",
   created() {
   const params = new URLSearchParams()
   params.append('account_id',this.id);
-  axios.post('http://127.0.0.1:8000/get_react_files',params).then(
+  axios.post('http://192.168.1.151:8000/get_react_files',params).then(
     res =>{
       this.tableData = res.data.file_list;
     })
@@ -148,7 +148,7 @@ name: "AccountDetail",
     fresh_table(){
     const params = new URLSearchParams()
     params.append('account_id',this.id);
-      axios.post('http://127.0.0.1:8000/get_react_files',params).then(
+      axios.post('http://192.168.1.151:8000/get_react_files',params).then(
     res =>{
       this.tableData = res.data.file_list;
     })
@@ -157,7 +157,7 @@ name: "AccountDetail",
     this.editForm['file_id'] = this.file_id;
     this.$refs[formName].validate((valid) => {
       if(valid){
-        axios.post('http://127.0.0.1:8000/update_file_content',this.editForm).then(
+        axios.post('http://192.168.1.151:8000/update_file_content',this.editForm).then(
       res => {
         this.$message.success("文件配置修改成功");
         this.fresh_table();
@@ -183,7 +183,7 @@ name: "AccountDetail",
     params.append('account_id',this.addForm.account_id);
     params.append('account_number',this.addForm.account_number);
     params.append('valid_status',this.addForm.valid_status);
-    axios.post('http://127.0.0.1:8000/addFile',params).then(
+    axios.post('http://192.168.1.151:8000/addFile',params).then(
       res =>{
         this.$message.success("新增关联对账单文件成功");
         this.fresh_table();

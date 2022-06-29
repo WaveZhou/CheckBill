@@ -45,7 +45,7 @@ institution_map = {
     '华创期货账户': 'HuaChuang',
     '中财期货账户': 'ZhongCaiQiHuo'
 }
-#mp = MysqlProxy()
+# mp = MysqlProxy()
 
 date_str = str(datetime.datetime.now().date())
 run_date = ''
@@ -81,6 +81,7 @@ class Module_Three():
     def __init__(self, settings):
         self.settings = settings
         self.mp = MysqlProxy()
+
     def rename_to_new_dir(self, origin_path, target_path, re_file_name, signal, flag):
         """
         源目录下的文件拷贝或剪切到目标目录，并更换目标目录的文件名
@@ -158,22 +159,23 @@ class Module_Three():
                             # print('把原来样子的文件名改成无效，把**（1）.txt的目标文件名写入数据库')
                         else:
                             sql_update_target_filename = 'UPDATE statement_arrive SET `status` = %s WHERE id = %s AND target_file_name = %s AND end_date = %s '
-                            self.mp.modify(sql_update_target_filename, [0, res_account, res_pro.target_pre_file, res_date])
+                            self.mp.modify(sql_update_target_filename,
+                                           [0, res_account, res_pro.target_pre_file, res_date])
                             # print('把数据库中**（res_num_pro-1）.txt的目标文件名改为无效，把**（res_num_pro）写入数据库')
                         # 把拷贝到target目录的文件写入数据库到达表
                         sql_insert_target_filename = 'INSERT INTO statement_arrive (`id`,`origin_path`,`origin_file_name`,`start_date`,`end_date`,`target_path_product`,`target_path_institution`,`target_file_name`,`operate_time`,`status`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
                         self.mp.create(sql_insert_target_filename,
-                                  [res_account, origin_path, file_or_rar, begin_date, res_date,
-                                   target_path_by_product,
-                                   target_path_by_institution, res_pro.target_file, current_time, 1])
+                                       [res_account, origin_path, file_or_rar, begin_date, res_date,
+                                        target_path_by_product,
+                                        target_path_by_institution, res_pro.target_file, current_time, 1])
                     else:
                         # 直接把目标目录写入arrive表
                         sql_insert_target_filename = 'INSERT INTO statement_arrive (`id`,`origin_path`,`origin_file_name`,`start_date`,`end_date`,`target_path_product`,`target_path_institution`,`target_file_name`,`operate_time`,`status`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 
                         self.mp.create(sql_insert_target_filename,
-                                  [res_account, origin_path, file_or_rar, begin_date, res_date,
-                                   target_path_by_product,
-                                   target_path_by_institution, res_pro.target_file, current_time, 1])
+                                       [res_account, origin_path, file_or_rar, begin_date, res_date,
+                                        target_path_by_product,
+                                        target_path_by_institution, res_pro.target_file, current_time, 1])
                 except:
                     print(file_or_rar, institution)
                 # 写完arrive表，准备把源目录下的相应文件改为已处理
@@ -182,12 +184,15 @@ class Module_Three():
 
     def execute(self):
         global flag, date_str, not_dealed
+        flag = True
+        date_str = str(datetime.datetime.now().date())
+        not_dealed = 0
         while flag:
             try:
                 os.listdir(self.settings['origin_path'])
             except FileNotFoundError as e:
                 # print('今日无对账单')
-                return e
+                raise e
             try:
                 for institution in os.listdir(self.settings['origin_path']):
 
@@ -197,7 +202,6 @@ class Module_Three():
                         continue
                     if os.path.isdir(os.path.join(self.settings['origin_path'], institution)):
                         for file_or_rar in os.listdir(os.path.join(self.settings['origin_path'], institution)):
-                            raise NotImplementedError
                             if file_or_rar.startswith('已处理'):
                                 continue
                             if file_or_rar.endswith('rar') or file_or_rar.endswith('RAR') or file_or_rar.endswith(
@@ -210,12 +214,16 @@ class Module_Three():
                                     institution_class = institution_map[institution]
                                     cur_belong = institution[0:2]
                                     cur_type = institution[-4:-2]
-                                    institution_impl = locals()[institution_class](cur_belong, cur_type)
+                                    institution_impl = eval(institution_class)(cur_belong, cur_type)
+                                    # institution_impl = locals()[institution_class](cur_belong, cur_type)
                                     if isinstance(institution_impl, AbstractInstitution):
                                         institution_impl.load_file_content_for_date(
                                             os.path.join(self.settings['origin_path'], institution))
                                         # 文件中的日期及文件名（可能含有多个）都需要返回
-                                except KeyError:
+                                except Exception as e:
+                                    # print(e)
+                                    # import traceback
+                                    # traceback.print_exc()
                                     subject_words = '在Map映射中未匹配到键或值'
                                     bug_out_path = os.path.join(self.settings['bugOut'], subject_words)
                                     if not os.path.exists(bug_out_path):
@@ -269,7 +277,8 @@ class Module_Three():
                                                 res_file_without_date = re.sub(res, '', file_or_rar)
                                             except AttributeError:
                                                 df = pd.read_excel(
-                                                    os.path.join(self.settings['origin_path'], institution, file_or_rar))
+                                                    os.path.join(self.settings['origin_path'], institution,
+                                                                 file_or_rar))
                                                 begin_date_str = str(df.iloc[1, 0]).split("：")[1].split('-')[0].strip()
                                                 begin_date = datetime.datetime.strptime(begin_date_str,
                                                                                         "%Y年%m月%d日").date().strftime(
@@ -279,18 +288,22 @@ class Module_Three():
                                                                                       "%Y年%m月%d日").date().strftime(
                                                     '%Y-%m-%d')
                                         elif '.txt' in file_or_rar:
-                                            res_file_without_date = file_or_rar.split('.')[0].split('-')[0] + '-' + '.' + \
+                                            res_file_without_date = file_or_rar.split('.')[0].split('-')[
+                                                                        0] + '-' + '.' + \
                                                                     file_or_rar.split('.')[1]
-                                            with open(os.path.join(self.settings['origin_path'], institution, file_or_rar),
+                                            with open(os.path.join(self.settings['origin_path'], institution,
+                                                                   file_or_rar),
                                                       'r') as f:
-                                                res = re.search(r'统计日期:.+(\d{4}[-/]?\d{2}[-/]?\d{2})', f.read()).group(0)
+                                                res = re.search(r'统计日期:.+(\d{4}[-/]?\d{2}[-/]?\d{2})', f.read()).group(
+                                                    0)
                                                 res_date_str = res.split(':')[1].strip()
                                                 begin_date = res_date_str.split('-')[0].strip()  # 对账单开始时间
                                                 end_date = res_date_str.split('-')[1].strip()
                                                 res_date = end_date
                                     elif institution == '兴业普通账户':
                                         if file_or_rar.endswith('txt'):
-                                            with open(os.path.join(self.settings['origin_path'], institution, file_or_rar),
+                                            with open(os.path.join(self.settings['origin_path'], institution,
+                                                                   file_or_rar),
                                                       'r') as f:
                                                 try:
                                                     res_content = f.read()
@@ -326,9 +339,11 @@ class Module_Three():
                                                   'r') as f:
                                             try:
                                                 res_content = f.read()
-                                                res = re.search(r'起止日期:.+(\d{4}[-/]?\d{2}[-/]?\d{2})', res_content).group(0)
+                                                res = re.search(r'起止日期:.+(\d{4}[-/]?\d{2}[-/]?\d{2})',
+                                                                res_content).group(0)
                                             except AttributeError:
-                                                res = re.search(r'统计日期:.+(\d{4}[-/]?\d{2}[-/]?\d{2})', res_content).group(0)
+                                                res = re.search(r'统计日期:.+(\d{4}[-/]?\d{2}[-/]?\d{2})',
+                                                                res_content).group(0)
                                             res_date_str = res.split(':')[1].strip()
                                             start_date = res_date_str.split('-')[0].strip()
                                             end_date = res_date_str.split('-')[1].strip()
@@ -340,7 +355,8 @@ class Module_Three():
                                             print(pdf.pages)  # Page对象列表
                                             page = pdf.pages[0]
                                             res_date = \
-                                                re.search(r'日期:.*(\d{4}?\d{2}?\d{2})', page.extract_text()).group(0).split(
+                                                re.search(r'日期:.*(\d{4}?\d{2}?\d{2})', page.extract_text()).group(
+                                                    0).split(
                                                     ':')[
                                                     1].strip()
                                     elif '中信建投' in institution:
@@ -353,7 +369,8 @@ class Module_Three():
                                                     print(pdf.pages)  # Page对象列表
                                                     page = pdf.pages[0]
                                                     res_date = \
-                                                        re.search(r'日期:.*(\d{4}?\d{2}?\d{2})', page.extract_text()).group(
+                                                        re.search(r'日期:.*(\d{4}?\d{2}?\d{2})',
+                                                                  page.extract_text()).group(
                                                             0).split(
                                                             ':')[
                                                             1].strip()
@@ -384,15 +401,17 @@ class Module_Three():
 
                                                 elif file_or_rar.endswith('TXT') or file_or_rar.endswith('txt'):
                                                     try:
-                                                        with open(os.path.join(self.settings['origin_path'], institution,
-                                                                               file_or_rar),
-                                                                  'r') as f:  # 打开文件
+                                                        with open(
+                                                                os.path.join(self.settings['origin_path'], institution,
+                                                                             file_or_rar),
+                                                                'r') as f:  # 打开文件
                                                             res_date_str = re.search(r'对帐期间：.*(.*)', f.read()).group(0)
                                                             begin_date_str = \
                                                                 res_date_str.split('：')[1].strip().split('---')[
                                                                     0].strip()
-                                                            res_date_str = res_date_str.split('：')[1].strip().split('---')[
-                                                                1].strip()
+                                                            res_date_str = \
+                                                                res_date_str.split('：')[1].strip().split('---')[
+                                                                    1].strip()
                                                             begin_date = datetime.datetime.strptime(begin_date_str,
                                                                                                     '%Y年%m月%d日').strftime(
                                                                 '%Y-%m-%d')
@@ -400,14 +419,18 @@ class Module_Three():
                                                                                                   '%Y年%m月%d日').strftime(
                                                                 '%Y-%m-%d')
                                                     except AttributeError:
-                                                        with open(os.path.join(self.settings['origin_path'], institution,
-                                                                               file_or_rar),
-                                                                  'r') as f:  # 打开文件
-                                                            res_date_str = re.search(r'对账起止日期：.*(.*)', f.read()).group(0)
-                                                            begin_date_str = res_date_str.split('：')[1].strip().split('-')[
-                                                                0].strip()
-                                                            res_date_str = res_date_str.split('：')[1].strip().split('-')[
-                                                                1].strip()
+                                                        with open(
+                                                                os.path.join(self.settings['origin_path'], institution,
+                                                                             file_or_rar),
+                                                                'r') as f:  # 打开文件
+                                                            res_date_str = re.search(r'对账起止日期：.*(.*)', f.read()).group(
+                                                                0)
+                                                            begin_date_str = \
+                                                                res_date_str.split('：')[1].strip().split('-')[
+                                                                    0].strip()
+                                                            res_date_str = \
+                                                                res_date_str.split('：')[1].strip().split('-')[
+                                                                    1].strip()
                                                             begin_date = datetime.datetime.strptime(begin_date_str,
                                                                                                     '%Y年%m月%d日').strftime(
                                                                 '%Y-%m-%d')
@@ -427,34 +450,40 @@ class Module_Three():
                                             res_date = res.split('：')[1].strip()
                                     elif institution == '永安期货账户':
                                         try:
-                                            with open(os.path.join(self.settings['origin_path'], institution, file_or_rar),
+                                            with open(os.path.join(self.settings['origin_path'], institution,
+                                                                   file_or_rar),
                                                       'r') as f:
                                                 res_content = f.read()
-                                                res = re.search(r'日期:.+(\d{4}[-/]?\d{2}[-/]?\d{2})', res_content).group(0)
+                                                res = re.search(r'日期:.+(\d{4}[-/]?\d{2}[-/]?\d{2})', res_content).group(
+                                                    0)
                                                 res_date = res.split(':')[1].strip()
-                                        except AttributeError:
-                                            subject_words = '对账单文件名在应到表中未匹配'
-                                            old_path = os.path.join(self.settings['origin_path'], institution, file_or_rar)
-                                            date_str = "".join(date_str.split('-'))
-                                            target_path = os.path.join(self.settings['not_matched'], date_str,
-                                                                       subject_words)
-                                            self.rename_to_new_dir(old_path, target_path, '未匹配_' + file_or_rar, 1, False)
-                                            self.rename_to_new_dir(
-                                                os.path.join(self.settings['origin_path'], institution, file_or_rar),
-                                                os.path.join(self.settings['origin_path'], institution),
-                                                '已处理_' + file_or_rar, 2,
-                                                False)
-                                            bug_out_path = os.path.join(self.settings['bugOut'], subject_words)
-                                            if not os.path.exists(bug_out_path):
-                                                os.makedirs(bug_out_path, exist_ok=True)
-                                            bug_out_path = bug_out_path + r'\{}-log.txt'.format(date_str)
-                                            # '文件名为{}的，券商账户类型为{}的对账单在应到表中未匹配到记录，'.format(file_or_rar, institution)
-                                            logger2.show_debug('文件名[ {} ]、券商账户类型为[ {} ]的对账单在应到表中未匹配到记录'.format(file_or_rar,
-                                                                                                               institution))
-                                            logger2.output_log({'file_name': bug_out_path,
-                                                                'message': '文件名[ {} ]、券商账户类型为[ {} ]的对账单在应到表中未匹配到记录'.format(
-                                                                    file_or_rar,
-                                                                    institution)})
+                                        except AttributeError as e:
+                                            print(e)
+                                            # subject_words = '对账单文件名在应到表中未匹配'
+                                            # old_path = os.path.join(self.settings['origin_path'], institution,
+                                            #                         file_or_rar)
+                                            # date_str = "".join(date_str.split('-'))
+                                            # target_path = os.path.join(self.settings['not_matched'], date_str,
+                                            #                            subject_words)
+                                            # self.rename_to_new_dir(old_path, target_path, '未匹配_' + file_or_rar, 2,
+                                            #                        False)
+                                            # # self.rename_to_new_dir(
+                                            # #     os.path.join(self.settings['origin_path'], institution, file_or_rar),
+                                            # #     os.path.join(self.settings['origin_path'], institution),
+                                            # #     '已处理_' + file_or_rar, 2,
+                                            # #     False)
+                                            # bug_out_path = os.path.join(self.settings['bugOut'], subject_words)
+                                            # if not os.path.exists(bug_out_path):
+                                            #     os.makedirs(bug_out_path, exist_ok=True)
+                                            # bug_out_path = bug_out_path + r'\{}-log.txt'.format(date_str)
+                                            # # '文件名为{}的，券商账户类型为{}的对账单在应到表中未匹配到记录，'.format(file_or_rar, institution)
+                                            # logger2.show_debug(
+                                            #     '文件名[ {} ]、券商账户类型为[ {} ]的对账单在应到表中未匹配到记录'.format(file_or_rar,
+                                            #                                                     institution))
+                                            # logger2.output_log({'file_name': bug_out_path,
+                                            #                     'message': '文件名[ {} ]、券商账户类型为[ {} ]的对账单在应到表中未匹配到记录'.format(
+                                            #                         file_or_rar,
+                                            #                         institution)})
                                     elif institution == '华创期货账户':
                                         with open(os.path.join(self.settings['origin_path'], institution, file_or_rar),
                                                   'r') as f:
@@ -486,16 +515,20 @@ class Module_Three():
                                             raise RuntimeError('文件名{}没有对应的解析对账日期方法'.format(file_or_rar))
                                     elif institution == '长江期货账户':
                                         try:
-                                            with open(os.path.join(self.settings['origin_path'], institution, file_or_rar),
+                                            with open(os.path.join(self.settings['origin_path'], institution,
+                                                                   file_or_rar),
                                                       'r') as f:
                                                 res_content = f.read()
-                                                res = re.search(r'日.*期:.*(\d{4}[-/]?\d{2}[-/]?\d{2})', res_content).group(0)
+                                                res = re.search(r'日.*期:.*(\d{4}[-/]?\d{2}[-/]?\d{2})',
+                                                                res_content).group(0)
                                                 res_date = res.split(':')[1].strip()
                                         except UnicodeDecodeError:
-                                            with open(os.path.join(self.settings['origin_path'], institution, file_or_rar),
+                                            with open(os.path.join(self.settings['origin_path'], institution,
+                                                                   file_or_rar),
                                                       encoding='utf-8') as f:
                                                 res_content = f.read()
-                                                res = re.search(r'日.*期:.*(\d{4}[-/]?\d{2}[-/]?\d{2})', res_content).group(0)
+                                                res = re.search(r'日.*期:.*(\d{4}[-/]?\d{2}[-/]?\d{2})',
+                                                                res_content).group(0)
                                                 res_date = res.split(':')[1].strip()
                                     elif '海通' in institution:
                                         if '普通' in institution:
@@ -546,14 +579,16 @@ class Module_Three():
                                         with open(os.path.join(self.settings['origin_path'], institution, file_or_rar),
                                                   'r') as f:
                                             res_content = f.read()
-                                            res = re.search(r'日期.*Date.*：.*(\d{4}[-/]?\d{2}[-/]?\d{2})', res_content).group(
+                                            res = re.search(r'日期.*Date.*：.*(\d{4}[-/]?\d{2}[-/]?\d{2})',
+                                                            res_content).group(
                                                 0)
                                             res_date = res.split('：')[1].strip()
                                     elif institution == '银河期货账户':
                                         with open(os.path.join(self.settings['origin_path'], institution, file_or_rar),
                                                   'r') as f:
                                             res_content = f.read()
-                                            res = re.search(r'日期.*Date.*:.*(\d{4}[-/]?\d{2}[-/]?\d{2})', res_content).group(
+                                            res = re.search(r'日期.*Date.*:.*(\d{4}[-/]?\d{2}[-/]?\d{2})',
+                                                            res_content).group(
                                                 0)
                                             res_date = res.split(':')[1].strip()
                                     elif institution == '补发账单':
@@ -617,9 +652,9 @@ class Module_Three():
                                     res_file_without_date = tf.get_filename_without_date(file_or_rar, '\d{4}\d{2}\d{2}')
                                     res_date = tf.get_date(file_or_rar, '\d{4}\d{2}\d{2}')
 
-
                                 sql_get = 'SELECT account_id FROM jm_statement.suppose_arrive WHERE `account_number` = %s AND valid_status =1;'
-                                res_account_id = self.mp.get_list(sql_get, [res_file_without_date.strip().replace(' ', '')])
+                                res_account_id = self.mp.get_list(sql_get,
+                                                                  [res_file_without_date.strip().replace(' ', '')])
 
                                 if institution in ('未知数据', '手动分类', '清算数据', '申万宏源', '华泰互换', '华创手动'):
                                     pass
@@ -652,10 +687,12 @@ class Module_Three():
                                             # 文件内容的重命名，同时到更新到新目录
                                             # old_path = os.path.join(settings['origin_path'], institution, file_name)
                                             # new_path_parent = os.path.join(settings['not_matched'], date_str, dir_name)
-                                            old_path = os.path.join(self.settings['origin_path'], institution, file_or_rar)
+                                            old_path = os.path.join(self.settings['origin_path'], institution,
+                                                                    file_or_rar)
                                             target_path = os.path.join(self.settings['not_matched'], date_str,
                                                                        subject_words)
-                                            self.rename_to_new_dir(old_path, target_path, '券商和账户类型有问题_' + file_or_rar, 1,
+                                            self.rename_to_new_dir(old_path, target_path, '券商和账户类型有问题_' + file_or_rar,
+                                                                   1,
                                                                    False)
                                             # 文件名[{}]所在目录券商类型{}未与账户信息表券商{}、类型{}正确匹配
                                             logger1.output_log({'file_name': bug_out_path,
@@ -680,7 +717,8 @@ class Module_Three():
                                     else:
                                         subject_words = '文件名在应到表匹配到多条记录'
                                         old_path = os.path.join(self.settings['origin_path'], institution, file_or_rar)
-                                        target_path = os.path.join(self.settings['not_matched'], date_str, subject_words)
+                                        target_path = os.path.join(self.settings['not_matched'], date_str,
+                                                                   subject_words)
                                         self.rename_to_new_dir(old_path, target_path, '多记录匹配_' + file_or_rar, 1, False)
                                         bug_out_path = os.path.join(self.settings['bugOut'], subject_words)
                                         if not os.path.exists(bug_out_path):
@@ -737,30 +775,39 @@ class Module_Three():
 
 
 if __name__ == '__main__':
+    # config = {
+    #     'origin_path': r'D:\整理券商对账单\origin',
+    #     'target_path': r'D:\整理券商对账单\target',
+    #     'not_matched': r'D:\整理券商对账单\notMatchedFile',
+    #     'bugOut': r'D:\整理券商对账单\bugOut'
+    # }
+    # today = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+    # begin_date = today - datetime.timedelta(days=10)
+    # begin_date = "".join(str(begin_date).split('-'))
+    # #'origin_path': r'D:\整理券商对账单\origin\收件日20220612 当天',
+    # for i in range(11):
+    #     try:
+    #         sub_dir = '收件日' + begin_date + ' 当天'
+    #         config['origin_path'] = os.path.join(config['origin_path'] + sub_dir)
+    #         mt = Module_Three(config)
+    #         mt.execute()
+    #     except Exception as e:
+    #         if isinstance(e, FileNotFoundError):
+    #             continue
+    #         else:
+    #             print()
+    #             #return {'code':'302','message':}
+    #     begin_date += datetime.timedelta(days=1)
+
     config = {
-        'origin_path': r'D:\整理券商对账单\origin',
+        'origin_path': r'D:\整理券商对账单\origin\收件日20220622 当天',
         'target_path': r'D:\整理券商对账单\target',
         'not_matched': r'D:\整理券商对账单\notMatchedFile',
         'bugOut': r'D:\整理券商对账单\bugOut'
     }
-    today = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
-    begin_date = today - datetime.timedelta(days=10)
-    begin_date = "".join(str(begin_date).split('-'))
-    for i in range(11):
 
-        try:
-            sub_dir = '收件日' + begin_date + ' 当天'
-            config['origin_path'] = os.path.join(config['origin_path'] + sub_dir)
-            mt = Module_Three(config)
-            mt.execute()
-        except Exception as e:
-            if isinstance(e,FileNotFoundError):
-                continue
-            else:
-                print()
-                #return {'code':'302','message':}
-        begin_date += datetime.timedelta(days=1)
-
-
-
-#
+    try:
+        mt = Module_Three(config)
+        mt.execute()
+    except Exception as e:
+        print(e)

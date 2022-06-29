@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #添加应用
+    # 添加应用
     'user',
     'index',
     'staff',
@@ -53,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -65,7 +64,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ['frontport/dist'],
-        #'DIRS': [os.path.join(BASE_DIR,"CheckBill/templates")],
+        # 'DIRS': [os.path.join(BASE_DIR,"CheckBill/templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,13 +79,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'CheckBill.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'  # 引擎
 SESSION_CACHE_ALIAS = 'default'  # 使用的缓存别名（默认内存缓存，也可以是memcache），此处别名依赖缓存的设置
-SESSION_COOKIE_NAME = 'sessionid' # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串
-SESSION_COOKIE_PATH = '/' # Session的cookie保存的路径
+SESSION_COOKIE_NAME = 'sessionid'  # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串
+SESSION_COOKIE_PATH = '/'  # Session的cookie保存的路径
 SESSION_COOKIE_DOMAIN = None  # Session的cookie保存的域名
 SESSION_COOKIE_SECURE = False  # 是否Https传输cookie
 SESSION_COOKIE_HTTPONLY = True  # 是否Session的cookie只支持http传输
@@ -94,28 +92,26 @@ SESSION_COOKIE_AGE = 1209600  # Session的cookie失效日期（2周）
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # 是否关闭浏览器使得Session过期
 SESSION_SAVE_EVERY_REQUEST = True  # 是否每次请求都保存Session，默认修改之后才保存
 
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'jm_statement',
         'USER': 'root',
-        'PASSWORD':'123456',
-        'HOST':'127.0.0.1',
-        'PORT':'3306'
+        'PASSWORD': '123456',
+        'HOST': '192.168.1.151',
+        'PORT': '3306'
     }
 }
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",		# 使用django-redis的缓存
-        "LOCATION": "redis://127.0.0.1:6379/0",			# redis数据库的位置
+        "BACKEND": "django_redis.cache.RedisCache",  # 使用django-redis的缓存
+        "LOCATION": "redis://127.0.0.1:6379/0",  # redis数据库的位置
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "CONNECTION_POOL_KWARGS": {"max_connections": 100},
-            "DECODE_RESPONSES": True,			# 自动将byte转成字符串
-            "PASSWORD": "",						# 设置密码
+            "DECODE_RESPONSES": True,  # 自动将byte转成字符串
+            "PASSWORD": "",  # 设置密码
         }
     }
 }
@@ -138,7 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -152,13 +147,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS=  [
-    os.path.join(BASE_DIR,"frontport/dist/static")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "frontport/dist/static")
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -168,7 +162,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8080',
-	'http://localhost:8082',
+    'http://localhost:8082',
     'http://localhost:8088',
 )
 
