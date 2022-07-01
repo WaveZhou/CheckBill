@@ -233,7 +233,7 @@ def update_file(request):
     import json
     if request.method == 'POST':
         post_body = json.loads(request.body.decode())
-        account_number = post_body['file_name']
+        account_number = str(post_body['file_name']).strip().replace(' ','')
         valid_status = post_body['valid_status']
         if valid_status == '有效':
             valid_status = 1
@@ -252,7 +252,7 @@ def add_file(request):
     if request.method == 'POST':
         concat = request.POST
         account_id = concat['account_id']
-        account_number = concat['account_number']
+        account_number = str(concat['account_number']).strip().replace(' ','')
         valid_status = concat['valid_status']
     sql = 'insert into jm_statement.suppose_arrive (account_id,account_number,valid_status) VALUES (%s,%s,%s)'
     mp = MysqlProxy()

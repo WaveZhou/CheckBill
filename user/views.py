@@ -60,7 +60,6 @@ def get_person(request):
 def save_pagesize(request):
     global login_user
     from utils import MysqlProxy
-    print("==============保存页码==================", end="")
     pagesize = request.GET.get("pagesize")
     login_user_list = cache.get('login_user')
     token = request.GET.get("token")
@@ -81,8 +80,6 @@ def job(request):
     import datetime
     cache.set("work_status", 1, 60 * 60 * 24)
     SINCE_DATE = datetime.date.today() - datetime.timedelta(days=5)
-    signal = threading.Semaphore(1)
-    signal.acquire()
     try:
         settings = {
             'mail_bit_path': r'D:\估值专用邮箱数据\久铭\邮件IMAP二进制缓存',
@@ -134,7 +131,6 @@ def job(request):
         cache.set("latest_finished_time", dict_complete, 60 * 60 * 24)
         cache.set("work_status", 0, 60 * 60 * 24)
         loader.log.info_running('本次运行结束', complete_time)
-        signal.release()
         return JsonResponse({'code': '200', 'message': '第一步执行成功', 'complete_time': complete_time})
     except Exception as e:
         cache.set("work_status", 0, 60 * 60 * 24)
@@ -155,8 +151,22 @@ def job(request):
             return JsonResponse({'code': '302', 'message': '请去目录{}查看异常情况'.format(bug_out_path)})
 
 
+def get_two_three_step_finished_time(request):
+    dict_com_two = cache.get('two_step_latest_time')
+    dict_com_three = cache.get('three_step_latest_time')
+    info_list = list()
+    if dict_com_two is not None:
+        data = dict_com_two['message'] + "_" + dict_com_two['finish_time']
+        info_list.append({'info_data': data})
+        if dict_com_three is not None:
+            data = dict_com_three['message'] + "_" + dict_com_three['finish_time']
+            info_list.append({'info_data': data})
+    return JsonResponse({'code': '200', 'message': info_list})
+
+
 def get_init_load_finish_time(request):
     dict_com = cache.get('latest_finished_time')
+
     if dict_com is not None:
         if dict_com['code'] == '200':
             message = dict_com['message']
@@ -183,10 +193,10 @@ class mythread(threading.Thread):
         import schedule as sd
         d = "09:15"
         sd.every().day.at(d).do(job, self.request)
+        cache.set("lock_task", 1, 60 * 60 * 1)
         # job_obj = job(request)
         while True:
             try:
-                cache.set("lock_task", 1, 60 * 60 * 1)
                 sd.run_pending()
                 # print("返回值为:", job_obj)
                 time.sleep(1)
@@ -198,6 +208,7 @@ class mythread(threading.Thread):
                 dict_complete['finish_time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 cache.set("latest_finished_time", dict_complete, 60 * 60 * 24)
                 cache.set("work_status", 0, 60 * 60 * 24)
+                raise e
 
 
 def first_step(request):
@@ -205,21 +216,24 @@ def first_step(request):
 
     flag = request.GET.get("flag")
     # 第一次跑程序
-    if flag != '200':
-        work_status = cache.get("work_status")
-        if work_status == 0 or work_status is None:
-            res = job(request)
-        elif work_status == 1:
-            res = JsonResponse({'code': '402', 'message': "后台拉取邮件程序正在运行"})
-        return res
-    else:
-        if cache.get("lock_task") == 1:
-            res = JsonResponse({'code': '305', 'message': "后台定时任务已开启，无需重复"})
+    try:
+        if flag != '200':
+            work_status = cache.get("work_status")
+            if work_status == 0 or work_status is None:
+                res = job(request)
+            elif work_status == 1:
+                res = JsonResponse({'code': '402', 'message': "后台拉取邮件程序正在运行"})
+            return res
         else:
-            my_lock_task = mythread(request)
-            my_lock_task.start()
-            res = JsonResponse({'code': '200', 'message': "后台定时任务开启成功"})
-        return res
+            if cache.get("lock_task") == 1:
+                res = JsonResponse({'code': '305', 'message': "后台定时任务已开启，无需重复"})
+            else:
+                my_lock_task = mythread(request)
+                my_lock_task.start()
+                res = JsonResponse({'code': '200', 'message': "后台定时任务开启成功"})
+            return res
+    except Exception as e:
+        return JsonResponse({'code': '308', 'message': str(e)})
 
 
 def two_step(request):
@@ -239,6 +253,10 @@ def two_step(request):
     log = Log('Copy_Files')
     log.show_debug('本次运行结束' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     complete_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    dict_complete = dict()
+    dict_complete['message'] = '第二步执行成功，最新完成时间'
+    dict_complete['finish_time'] = complete_time
+    cache.set("two_step_latest_time", dict_complete, 60 * 60 * 24)
     return JsonResponse({'code': '200', 'message': '第二步执行成功', 'complete_time': complete_time})
 
 
@@ -251,25 +269,46 @@ def three_step(request):
     }
     today = datetime.datetime.today().date()
     begin_date = today - datetime.timedelta(days=10)
-    print(begin_date)
-    for i in range(11):
-        sub_dir = '收件日' + "".join(str(begin_date).split('-')) + ' 当天'
-        config['origin_path'] = os.path.join(config['origin_path'], sub_dir)
-        try:
-            mt = Module_Three(config)
-            mt.execute()
-        except Exception as e:
-            if isinstance(e, FileNotFoundError):
-                begin_date += datetime.timedelta(days=1)
-                config['origin_path'] = config['origin_path'].replace(config['origin_path'].split(os.path.sep)[-1], '')
-                continue
-            else:
-                return JsonResponse({'code': '302', 'message': str(e)})
-        begin_date += datetime.timedelta(days=1)
-        config['origin_path'] = config['origin_path'].replace(config['origin_path'].split(os.path.sep)[-1], '')
-    print(begin_date)
-    complete_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    print('本次处理完成 ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    three_status = cache.get("three_status")
+    if three_status == 1:
+        return JsonResponse({'code': '406', 'message': '后台第三步正在执行，请稍等'})
+    else:
+        cache.set("three_status", 1, 60 * 60 * 24)
+        for i in range(11):
+            print('第{}次走第三步后台函数'.format(i))
+            sub_dir = '收件日' + "".join(str(begin_date).split('-')) + ' 当天'
+            config['origin_path'] = os.path.join(config['origin_path'], sub_dir)
+            try:
+                mt = Module_Three(config)
+                mt.execute()
+            except Exception as e:
+                if isinstance(e, FileNotFoundError):
+                    begin_date += datetime.timedelta(days=1)
+                    config['origin_path'] = config['origin_path'].replace(config['origin_path'].split(os.path.sep)[-1],
+                                                                          '')
+                    continue
+                else:
+                    cache.set("three_status", 0)
+                    logger = Log('Unknown-Exception')
+                    date_str = str(datetime.datetime.now().date())
+                    date_str = "".join(date_str.split('-'))
+                    base_dir = r'D:\整理券商对账单\bugOut'
+                    subject_words = '未知的异常'
+                    bug_out_path = os.path.join(base_dir, subject_words)
+                    if not os.path.exists(bug_out_path):
+                        os.makedirs(bug_out_path, exist_ok=True)
+                    bug_out_path = bug_out_path + r'\{}-log.txt'.format(date_str)
+                    logger.output_log({'file_name': bug_out_path, 'message': str(e)})
+                    return JsonResponse({'code': '302', 'message': str(e)})
+            begin_date += datetime.timedelta(days=1)
+            config['origin_path'] = config['origin_path'].replace(config['origin_path'].split(os.path.sep)[-1], '')
+        print(begin_date)
+        complete_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print('本次处理完成 ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        dict_complete = dict()
+        dict_complete['message'] = '第三步执行成功，最新完成时间'
+        dict_complete['finish_time'] = complete_time
+        cache.set("three_step_latest_time", dict_complete, 60 * 60 * 24)
     return JsonResponse({'code': '200', 'message': '第三步执行成功', 'complete_time': complete_time})
 
 
@@ -280,7 +319,8 @@ def re_match(request):
     base_dir = r'D:\整理券商对账单\notMatchedFile'
     target_path = os.path.join(base_dir, date_str, '对账单文件名在应到表中未匹配')
     res = os.listdir(target_path)
+    cache.set("three_status", 0)
     if len(res) > 0:
-        return JsonResponse({'code': '204', 'message': '仍有新来的对账单没有和券商账户关联'})
+        return JsonResponse({'code': '204', 'message': 'notMatchedFile目录下仍有{}个文件没有和券商账户关联'.format(len(res))})
     else:
         return JsonResponse({'code': '200', 'message': '已将近十天的对账单整理完毕，可去未到对账单页面查看结果'})

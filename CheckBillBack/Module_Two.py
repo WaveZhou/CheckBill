@@ -2,8 +2,7 @@
 import os, datetime, shutil
 from CheckBillBack.utils.Log_Record import Log
 from CheckBillBack.utils.Transform_FileName import Transform_FileName
-
-
+from CheckBillBack.utils.MysqlProxy import MysqlProxy
 # setting = {'origin_jiuming': r'D:\估值专用邮箱数据\久铭\邮件账户分类保存\收件日20220601 当天',
 #            'origin_bills': r'D:\券商对账单\origin\收件日20220601 当天'}
 
@@ -17,7 +16,7 @@ class Module_Tow(object):
     def __init__(self):
         print()
 
-    def copy_files(self, setting):
+    def copy_files(self, setting,SINCE_DATE):
         if not os.path.exists(os.path.join(setting['origin_jiuming'])):
             return
         print(setting)
@@ -31,6 +30,20 @@ class Module_Tow(object):
                         if hash(open(os.path.join(setting['origin_bills'], dir, '已处理_' + file), 'rb').read()) == hash(
                                 open(os.path.join(setting['origin_jiuming'], dir, file), 'rb').read()):
                             continue
+                    if file.lower().endswith('rar') or file.lower().endswith('zip'):
+                        mp = MysqlProxy()
+                        sql_get_record = 'SELECT * FROM `copy_record` WHERE `copy_date`=%s AND `directory`=%s AND `com_package_name`=%s'
+                        one_record = mp.get_one(sql_get_record,[str(datetime.datetime.date(SINCE_DATE)),dir,file])
+                        if one_record is not None:
+                            continue
+                        else:
+                            shutil.copy(os.path.join(setting['origin_jiuming'], dir, file),
+                                        os.path.join(setting['origin_bills'], dir, file))
+                            sql_insert_record = 'INSERT INTO `copy_record` (`copy_date`,`directory`,`com_package_name`) VALUES (%s,%s,%s)'
+                            mp.modify(sql_insert_record,[str(datetime.datetime.date(SINCE_DATE)),dir,file])
+                            continue
+                    # 如果文件名结尾是压缩包形式，①如果找到拷贝表中已有该日期，该目录，该压缩包的记录，则continue
+                    # ②如果没找到，则拷贝一份，且在数据库拷贝表中存一条这样的记录，也continue
                     shutil.copy(os.path.join(setting['origin_jiuming'], dir, file),
                                 os.path.join(setting['origin_bills'], dir, file))
 
@@ -43,7 +56,7 @@ class Module_Tow(object):
             basic_setting['origin_jiuming'] = jiuming
             basic_setting['origin_bills'] = origin
 
-            self.copy_files(basic_setting)
+            self.copy_files(basic_setting,SINCE_DATE)
 
             basic_setting['origin_jiuming'] = basic_setting['origin_jiuming'].replace(
                 basic_setting['origin_jiuming'].split(os.path.sep)[-1], '')

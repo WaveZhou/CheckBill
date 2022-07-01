@@ -22,8 +22,8 @@ export default new Router({
       }
     },
     {
-      path:'/Index',
-      name:'Index',
+      path:'/index',
+      name:'index',
       component:index,
       meta: {
         title: 'demo界面'

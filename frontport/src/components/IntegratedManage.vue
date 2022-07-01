@@ -36,7 +36,7 @@
 
 <script>
  import axios from 'axios';
- import {preventReClick} from './Index'
+ import {preventReClick} from './index'
  import Qs from 'qs';
   export default {
     name: "IntegratedManage",
@@ -54,6 +54,26 @@
         res=>{
            if(res.data.code === '200'){
               this.input_1 = res.data.message + "=>" + res.data.complete_time;
+              axios.get("http://192.168.1.151:8000/get_two_three_step_finished_time").then(
+                res =>{
+                  if(res.data.code === '200'){
+                    console.log(res.data.message);
+                    if(res.data.message.length === 1){
+                      this.input_2 = res.data.message[0]['info_data'].replace('_','=>');
+                    }
+                    if(res.data.message.length === 2){
+                      this.input_2 = res.data.message[0]['info_data'].replace('_','=>');
+                      this.input_3 = res.data.message[1]['info_data'].replace('_','=>');
+                    }
+
+                  }
+                }
+              ).catch(
+                error =>{
+                  console.log(error);
+                }
+              )
+
             }else if(res.data.code === '301'){
               this.input_1 = res.data.message;
            }else if(res.data.code === '308'){
@@ -88,6 +108,8 @@
                      this.$message.warning("请将文本框显示的报错提交技术人员处理");
                      console.log(res.data.message)
 
+                  }else if(res.data.code === '308'){
+                     this.input_1 = res.data.message;
                   }
                 })
       },
@@ -148,7 +170,9 @@
                 this.input_3 = res.data.message;
                 this.$message.error("报错信息提交给相关技术处理")
 
-             }
+             }else if(res.data.code === '406') {
+                     this.input_3 = res.data.message
+              }
         })
       }
     }

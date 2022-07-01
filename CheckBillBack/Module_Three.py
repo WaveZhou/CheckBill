@@ -244,7 +244,21 @@ class Module_Three():
                                 res_date = tf.get_date(file_or_rar)
                                 begin_date = None
                                 res_file_without_date = ''
-                                if institution == '特别处理':
+                                if institution == '特别处理账户':
+                                    # # TODO: 暂未处理待处理的读取部分
+                                    # with open(os.path.join(self.settings['origin_path'], institution,file_or_rar),'r') as f:
+                                    #     res_content = f.read()
+                                    #     res = re.search(r'日  期:.*(\d{4}[-/]?\d{2}[-/]?\d{2})',res_content).group(0)
+                                    #     begin_date_ori = res.split(':')[1].split('-')[0].strip()
+                                    #     end_date_ori = res.split(':')[1].split('-')[1].strip()
+                                    #     begin_date= str(
+                                    #         datetime.datetime.date(datetime.datetime.strptime(begin_date_ori, '%Y%m%d')))
+                                    #
+                                    #     res_date = str(
+                                    #         datetime.datetime.date(datetime.datetime.strptime(end_date_ori, '%Y%m%d')))
+                                    #20181028 - 20220627
+                                    begin_date = '20181028'
+                                    res_date = '20220627'
                                     pass
                                     # df = pd.read_excel(os.path.join(settings['origin_path'], institution, file_or_rar))
                                     # data = df.iloc[2, 1]
@@ -800,7 +814,7 @@ if __name__ == '__main__':
     #     begin_date += datetime.timedelta(days=1)
 
     config = {
-        'origin_path': r'D:\整理券商对账单\origin\收件日20220622 当天',
+        'origin_path': r'D:\整理券商对账单\origin\收件日20220701 当天',
         'target_path': r'D:\整理券商对账单\target',
         'not_matched': r'D:\整理券商对账单\notMatchedFile',
         'bugOut': r'D:\整理券商对账单\bugOut'

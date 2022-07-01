@@ -23,7 +23,6 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
-    #
     # cache.set('flag', 0, 60 * 60 * 24)
     # res = cache.get('flag')
 
@@ -31,6 +30,7 @@ def main():
     # a_1  = a()
     # a_2 = a()
     #cache.delete('work_status')
+    #cache.delete('three_status')
     # cache.set('flag', a_1, 60 * 60 * 24)
     # res_1 = cache.get('flag')
     # print(hash(res_1))

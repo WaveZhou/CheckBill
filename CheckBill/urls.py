@@ -49,6 +49,7 @@ urlpatterns = [
     path('three_step',user_view.three_step),
     path('re_match',user_view.re_match),
     path('get_init_load_finish_time',user_view.get_init_load_finish_time),
+    path('get_two_three_step_finished_time',user_view.get_two_three_step_finished_time),
     path('get_email_config',statement_views.get_email_config),
     path('add_email_config',statement_views.add_email_config),
     path('search_jiuming',statement_views.search_jiuming),
