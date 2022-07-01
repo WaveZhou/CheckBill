@@ -257,8 +257,6 @@ class Module_Three():
                                     #     res_date = str(
                                     #         datetime.datetime.date(datetime.datetime.strptime(end_date_ori, '%Y%m%d')))
                                     #20181028 - 20220627
-                                    begin_date = '20181028'
-                                    res_date = '20220627'
                                     pass
                                     # df = pd.read_excel(os.path.join(settings['origin_path'], institution, file_or_rar))
                                     # data = df.iloc[2, 1]
