@@ -2,10 +2,11 @@
 
   <div class="deit">
     <div class="crumbs">
-      <el-breadcrumb separator="/" style="margin-top: -60px;
+      <el-breadcrumb separator="/" style="
     border: initial;
     line-height: 3;
     color: black;
+    margin-top: -60px;
 ">
     <el-breadcrumb-item style="font-size: larger; font-weight: bold"><i class="el-icon-date"></i> <span style="color: #42b983">数据管理</span></el-breadcrumb-item>
     <el-breadcrumb-item style="font-size: larger;  font-weight: bold"><span style="color: cornflowerblue;">未到对账单账户信息（默认显示T-2）</span></el-breadcrumb-item>
@@ -16,13 +17,13 @@
 </div></el-col>
 
   <el-col :span="4" ><div class="grid-content bg-purple">
-       <el-select v-model="belongForm.status" multiple placeholder="选择券商名称筛选" @change="styleChange" style="width:300px">
+       <el-select v-model="belongForm.status" multiple placeholder="选择券商名称筛选" @change="styleChange" style="width:300px" >
       <el-option v-for="item in option32" :key="item.label" :label="item.label" :value="item.value"/>
     </el-select>
   </div></el-col>
 
   <el-col :span="4" ><div class="grid-content bg-purple">
-    <el-select v-model="typeForm.status" multiple placeholder="选择账户类型筛选" @change="styleChange" style="width:301px;">
+    <el-select v-model="typeForm.status" multiple placeholder="选择账户类型筛选" @change="styleChange" style="width:301px;"  >
      <el-option v-for="item in optionA5" :key="item.value" :label="item.label" :value="item.value"/>
     </el-select>
   </div></el-col>

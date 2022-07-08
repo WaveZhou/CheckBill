@@ -8,6 +8,8 @@ from CheckBillBack.Module_One import ImapLoader
 from CheckBillBack.structures.MailReceiveInfo import MailReceiveInfo
 from sqlalchemy.orm.exc import NoResultFound
 
+from utils.MysqlProxy import MysqlProxy
+
 
 def get_print_bills(request):
     # 处理前端发来的post请求里的print_list
@@ -88,6 +90,14 @@ def get_email_config(request):
     imapload_jingjiu.db.close()
     result_list_jiuming = list()
     result_list_jingjiu = list()
+
+    mp = MysqlProxy()
+    token = request.GET.get('token')
+    query_param_user_id = eval(token).split('_')[0]
+    sql_get_authentication = "SELECT `is_autorized` FROM `user_profile` up INNER JOIN `staff_wx_login` sw on up.user_id = sw.user_id WHERE sw.user_id = %s"
+    authentication_code = mp.get_one(sql_get_authentication, [query_param_user_id])['is_autorized']
+    mp.close()
+
     for ele in res_jingjiu:
         obj = dict()
         if isinstance(ele, MailReceiveInfo):
@@ -101,7 +111,7 @@ def get_email_config(request):
             obj['institution'] = ele.institution
         result_list_jiuming.append(obj)
     return JsonResponse(
-        {'status_code': 200, 'result_list_jiuming': result_list_jiuming, 'result_list_jingjiu': result_list_jingjiu})
+        {'status_code': 200, 'result_list_jiuming': result_list_jiuming, 'result_list_jingjiu': result_list_jingjiu, 'authentication_code':authentication_code})
 
 
 def util_add_config(request, imapLoad):

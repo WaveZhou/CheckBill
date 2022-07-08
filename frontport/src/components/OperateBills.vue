@@ -39,7 +39,7 @@
  import {preventReClick} from './index'
  import Qs from 'qs';
   export default {
-    name: "IntegratedManage",
+    name: "OperateBills",
     data() {
       return {
         input_1 : '',

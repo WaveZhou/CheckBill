@@ -5,7 +5,7 @@ import Login from '@/components/Login'
 import DataManageCenter from "../components/DataManageCenter";
 import Bills from "../components/Bills";
 import AccountInformation from "../components/AccountInformation";
-import IntegratedManage from "../components/IntegratedManage";
+import OperateBills from "../components/OperateBills";
 import AccountDetail from "../components/AccountDetail";
 import EmailConfig from "../components/EmailConfig";
 
@@ -60,9 +60,9 @@ export default new Router({
         title: '账户与对账单文件名配置'
       }},
     {
-      path: '/IntegratedManage',
-      name:'IntegratedManage',
-      component: IntegratedManage,
+      path: '/OperateBills',
+      name:'OperateBills',
+      component: OperateBills,
       meta: {
         title: '对账单日常操作流程'
       }

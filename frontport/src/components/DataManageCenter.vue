@@ -106,7 +106,8 @@ export default {
     return {
       msg: '',
       user_name:'',
-      user_id: this.$route.query.user_id
+      user_id: this.$route.query.user_id,
+      token : '',
     }
   },
   mounted() {
@@ -143,15 +144,15 @@ export default {
         window.open(jump_bills_page.href,'_blank');
       },
       manage_accountinfomation(){
-        let jump_account_page = this.$router.resolve({path:"AccountInformation"});
+        let jump_account_page = this.$router.resolve({path:"AccountInformation",query:{token:JSON.stringify(this.token)}});
         window.open(jump_account_page.href,'_blank');
       },
       integrated_manage(){
-        let jump_center_page = this.$router.resolve({path:"IntegratedManage"});
+        let jump_center_page = this.$router.resolve({path:"OperateBills"});
         window.open(jump_center_page.href,'_blank');
       },
       email_config(){
-        let jump_email_page = this.$router.resolve({path:"EmailConfig"});
+        let jump_email_page = this.$router.resolve({path:"EmailConfig",query:{token:JSON.stringify(this.token)}});
         window.open(jump_email_page.href,'_blank');
       },
       demostrate(){

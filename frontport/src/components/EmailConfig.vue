@@ -39,11 +39,13 @@
 
             <div class="button_inline_left">
              <el-button
+                :disabled=change_Click
             size="mini"
             @click="handleEdit(scope.$index, scope.row,1)">编辑</el-button>
             </div>
           <div class="button_inline_right">
             <el-button
+               :disabled=change_Click
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row,1)">删除</el-button>
@@ -77,11 +79,13 @@
          <div class="parent_div" style="margin-left: 3px;">
           <div class="button_inline_left">
           <el-button
+            :disabled=change_Click
             size="mini"
             @click="handleEdit(scope.$index, scope.row,2)">编辑</el-button>
           </div>
            <div class="button_inline_right">
           <el-button
+             :disabled=change_Click
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row,2)">删除</el-button>
@@ -126,6 +130,7 @@
       <div class="inline-button-left">
       <el-col :span="1">
       <el-button
+         :disabled=change_Click
         type="success"
         @click="addCreate(1)"
 
@@ -138,6 +143,7 @@
       <div class="inline-button-right">
       <el-col :span="1">
       <el-button
+         :disabled=change_Click
         type="success"
         @click="addCreate(2)"
         icon="el-icon-circle-plus-outline"
@@ -190,6 +196,9 @@ export default {
   name: "EmailConfig",
   data(){
     return {
+          token: this.$route.query.token,
+          change_Click: false,
+          authentication_code: '',
           currentPage_jiu : 1,
           pagesize_jiu : 10,
           currentPage_jing : 1,
@@ -226,10 +235,12 @@ export default {
   },
   methods :{
         initiateConfig(){
-           axios.get("http://192.168.1.151:8000/get_email_config").then(res=>{
+           let  _this = this;
+           axios.get("http://192.168.1.151:8000/get_email_config?token="+this.token).then(res=>{
               if(res.data.status_code === 200){
                   this.jiuming_tableData = res.data.result_list_jiuming;
                   this.jingjiu_tableData = res.data.result_list_jingjiu;
+                  this.change_Click = res.data.authentication_code === 0;
               }
           }).catch(
             res =>{

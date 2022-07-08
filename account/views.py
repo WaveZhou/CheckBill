@@ -132,13 +132,17 @@ def get_boxs(request):
 def get_accounts(request):
     mp = MysqlProxy()
     sql = "select * from account_information"
+    token = request.GET.get('token')
+    query_param_user_id = eval(token).split('_')[0]
+    sql_get_authentication = "SELECT `is_autorized` FROM `user_profile` up INNER JOIN `staff_wx_login` sw on up.user_id = sw.user_id WHERE sw.user_id = %s"
+    authentication_code = mp.get_one(sql_get_authentication,[query_param_user_id])['is_autorized']
     account_list = mp.get_list(sql, None)
     mp.close()
     for row in account_list:
         for col_key in row:
             if row[col_key] == 'Null' or row[col_key] is None:
                 row[col_key] = ''
-    return JsonResponse({"status_code": '200', "account_list": account_list})
+    return JsonResponse({"status_code": '200', "account_list": account_list,"authentication_code":authentication_code})
 
 
 def insert_account(array):
@@ -254,7 +258,7 @@ def add_file(request):
         account_id = concat['account_id']
         account_number = str(concat['account_number']).strip().replace(' ','')
         valid_status = concat['valid_status']
-    sql = 'insert into jm_statement.suppose_arrive (account_id,account_number,valid_status) VALUES (%s,%s,%s)'
+    sql = 'insert into suppose_arrive (account_id,account_number,valid_status) VALUES (%s,%s,%s)'
     mp = MysqlProxy()
     auto_id = mp.create(sql, [account_id, account_number, valid_status])
     mp.close()

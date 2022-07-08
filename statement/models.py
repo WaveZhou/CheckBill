@@ -11,5 +11,5 @@ class Arrive(models.Model):
     def __str__(self):
         #start = datetime.datetime.strftime(self.start_date,'%Y-%m-%d')
         #end = datetime.datetime.strftime(self.end_date,'%Y-%m-%d')
-        return "<Person:{id=%s,start_date=%s,end_date=%s,file_name=%s,status=%d}>" \
+        return "<Arrive:{id=%s,start_date=%s,end_date=%s,file_name=%s,status=%d}>" \
                % (self.id, self.start_date.strftime('%Y-%m-%d'), self.end_date.strftime('%Y-%m-%d'),self.status)
