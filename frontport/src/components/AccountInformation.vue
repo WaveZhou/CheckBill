@@ -63,8 +63,8 @@
 
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.$index, tableData)">编辑</el-button>
-          <el-button
+          <el-button :disabled= change_Click  size="mini" type="primary" @click="handleEdit(scope.$index, tableData)">编辑</el-button>
+          <el-button :disabled= change_Click
             size="mini"
             type="info"
             @click.native.prevent="detailmessage(scope.$index, tableData)"
@@ -201,6 +201,7 @@
           <el-option label="期货账户" value="期货账户"></el-option>
           <el-option label="信用账户" value="信用账户"></el-option>
           <el-option label="收益互换" value="收益互换"></el-option>
+          <el-option label="场外期权" value="场外期权"></el-option>
       </el-select>
          </el-col>
     </el-form-item>
@@ -296,6 +297,7 @@ export default {
 
   data() {
     return {
+      change_Click : false,
       currentPage:1, //初始页
       pagesize:10,
       tableData: [],//   数据总量
@@ -307,6 +309,8 @@ export default {
       formLabelWidth:'',
       tableData_back : [],
       tableDate_length_back : '',
+      token: this.$route.query.token,
+      authentication_code : '',
       form: {
         product: "",
         belong: "",
@@ -450,8 +454,8 @@ export default {
       // 分页功能
      else {
        //所有数据的长度  赋值给分页组件中的total
-        console.log('no condition_this.tabledata:');
-        console.log(this.tableData);
+       //  console.log('no condition_this.tabledata:');
+       //  console.log(this.tableData);
         this.tableData = this.tableData_back;
         this.tableDate_length = this.tableDate_length_back
         let total = this.tableData;
@@ -547,8 +551,8 @@ export default {
           params.append('contact',contact);
           axios.post('http://192.168.1.151:8000/get_others_info',params).then(
             res => {
-              console.log(res.data.message);
-              console.log(res.data.contact_result);
+              // console.log(res.data.message);
+              // console.log(res.data.contact_result);
               if(res.data.contact_result !== null){
                 this.ruleForm.contact_email = res.data.contact_result.contact_email;
                 this.ruleForm.contact_mob = res.data.contact_result.contact_mob;
@@ -589,10 +593,10 @@ export default {
     detailmessage(index, tableData) {
         let page = this.currentPage;
         index = index + this.indexMethod(page);
-        console.log(tableData);
-        console.log(index);
+        // console.log(tableData);
+        // console.log(index);
         this.$router.push({name:'AccountDetail',params:{'id':tableData[index].id}});
-      //row.splice(index, 1);
+       //row.splice(index, 1);
     },
 
 
@@ -650,6 +654,7 @@ export default {
            const _this = this;
            //_this.token = _this.$route.params.token;
           _this.token = JSON.parse(this.$route.query.token);
+
             axios.get("http://192.168.1.151:8000/get_bills?account_type="+""+"&end_time="+""+"&product_name="+""+"&belong_name="+""+"&department_name="+""+"&token="+_this.token).then(res => {
               //这是从本地请求的数据接口
                 if(res.data.status_code === '200'){
@@ -667,16 +672,17 @@ export default {
 
     initTable(){
         const _this = this;
-        //_this.token = JSON.parse(this.$route.query.token);
-        axios.get("http://192.168.1.151:8000/get_accounts?token="+'123456').then( res => {
+        axios.get("http://192.168.1.151:8000/get_accounts?token="+this.token).then( res => {
         if(res.data.status_code === '200'){
+            _this.autentication_code = parseInt(res.data.authentication_code);
+            _this.change_Click = _this.autentication_code === 0;
             _this.tableData = res.data.account_list;
             _this.tableData_back = res.data.account_list;
             _this.tableDate_length = res.data.account_list.length;
             _this.tableDate_length_back = res.data.account_list.length;
           }else {
            _this.$router.push("/");
-           alert("请先登录");
+           _this.$message.info("请先登录");
          }
         }
           ).catch(error => {
