@@ -196,7 +196,7 @@ export default {
   name: "EmailConfig",
   data(){
     return {
-          token: this.$route.query.token,
+          token: '',
           change_Click: false,
           authentication_code: '',
           currentPage_jiu : 1,
@@ -235,12 +235,15 @@ export default {
   },
   methods :{
         initiateConfig(){
+           this.token = JSON.parse(this.$route.query.token);
            let  _this = this;
            axios.get("http://192.168.1.151:8000/get_email_config?token="+this.token).then(res=>{
               if(res.data.status_code === 200){
                   this.jiuming_tableData = res.data.result_list_jiuming;
                   this.jingjiu_tableData = res.data.result_list_jingjiu;
                   this.change_Click = res.data.authentication_code === 0;
+                  this.pagesize_jiu = res.data.page_size;
+                  this.pagesize_jing = res.data.page_size;
               }
           }).catch(
             res =>{
@@ -268,8 +271,6 @@ export default {
                     }else {
                       _this.search_jingjiu();
                     }
-
-
 
                   }
                 }
@@ -384,6 +385,7 @@ export default {
                 if(res.data.status_code === 200){
                    _this.$message.success(res.data.message);
                    _this.jiuming_tableData = res.data.result_list;
+
                    // _this.initiateConfig();
                 }
 

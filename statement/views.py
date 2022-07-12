@@ -93,9 +93,17 @@ def get_email_config(request):
 
     mp = MysqlProxy()
     token = request.GET.get('token')
-    query_param_user_id = eval(token).split('_')[0]
+    query_param_user_id = token.split('_')[0]
     sql_get_authentication = "SELECT `is_autorized` FROM `user_profile` up INNER JOIN `staff_wx_login` sw on up.user_id = sw.user_id WHERE sw.user_id = %s"
     authentication_code = mp.get_one(sql_get_authentication, [query_param_user_id])['is_autorized']
+
+    sql_getpage = 'select page_size from jm_statement.user_profile where `user_id` = %s'
+    page_obj = mp.get_one(sql_getpage, [query_param_user_id])
+    global page_size
+    if not page_obj['page_size']:
+        page_size = 10
+    else:
+        page_size = page_obj['page_size']
     mp.close()
 
     for ele in res_jingjiu:
@@ -111,7 +119,7 @@ def get_email_config(request):
             obj['institution'] = ele.institution
         result_list_jiuming.append(obj)
     return JsonResponse(
-        {'status_code': 200, 'result_list_jiuming': result_list_jiuming, 'result_list_jingjiu': result_list_jingjiu, 'authentication_code':authentication_code})
+        {'status_code': 200, 'result_list_jiuming': result_list_jiuming, 'result_list_jingjiu': result_list_jingjiu, 'authentication_code':authentication_code,'page_size':page_size})
 
 
 def util_add_config(request, imapLoad):

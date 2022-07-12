@@ -227,7 +227,7 @@
                   }
 
                 })
-                console.log(this.pagesize)  //每页下拉显示数据
+                //console.log(this.pagesize)  //每页下拉显示数据
         },
         handleCurrentChange: function(currentPage){
                 this.currentPage = currentPage;
@@ -236,7 +236,7 @@
         handleAccountList() {
            const _this = this;
            //_this.token = _this.$route.params.token;
-          _this.token = JSON.parse(this.$route.query.token);
+            _this.token = JSON.parse(this.$route.query.token);
             axios.get("http://192.168.1.151:8000/get_bills?account_type="+""+"&end_time="+""+"&product_name="+""+"&belong_name="+""+"&department_name="+""+"&token="+_this.token).then(res => {
               //这是从本地请求的数据接口
                 if(res.data.status_code === '200'){

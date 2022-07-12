@@ -8,6 +8,7 @@ import AccountInformation from "../components/AccountInformation";
 import OperateBills from "../components/OperateBills";
 import AccountDetail from "../components/AccountDetail";
 import EmailConfig from "../components/EmailConfig";
+import AccountInfoQuery from "../components/AccountInfoQuery";
 
 Vue.use(Router)
 
@@ -52,6 +53,15 @@ export default new Router({
       meta: {
         title: '券商账户信息维护'
       }},
+    {
+      path: '/AccountInfoQuery',
+      name:'AccountInfoQuery',
+      component: AccountInfoQuery,
+      meta: {
+        title: '券商账户信息查询'
+      }
+    }
+    ,
      {
       path: '/AccountDetail',
       name:'AccountDetail',

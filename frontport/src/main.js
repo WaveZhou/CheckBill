@@ -6,10 +6,10 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import HeyUI from 'heyui'
-
+import  * as tools from './components/AccountInformation'
 Vue.use(ElementUI);
 Vue.use(HeyUI);
-
+Vue.prototype.$tools = tools;
 
 Vue.config.productionTip = false;
 import VueWechatTitle from 'vue-wechat-title'
