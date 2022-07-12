@@ -5,7 +5,7 @@
   <br/>
   <p>
     <el-tooltip class="item" effect="dark" content="把邮箱中的附件放置在服务器的邮件账户分类保存目录中" placement="top-start">
-        <el-button type="primary" @click="firstStep()" v-preventReClick>第 一 步</el-button>
+        <el-button :disabled=change_Click type="primary" @click="firstStep()" v-preventReClick>第 一 步</el-button>
     </el-tooltip>
    <el-input v-model="input_1" style="width: 447px" disabled></el-input>
   </p>
@@ -13,7 +13,7 @@
   <br/>
   <p >
      <el-tooltip class="item" effect="dark" content="把服务器的邮件账户分类保存目录中的文件复制到origin目录" placement="top-start">
-        <el-button type="success" @click="secondStep()"  id="two" v-preventReClick>第 二 步</el-button>
+        <el-button :disabled=change_Click type="success" @click="secondStep()"  id="two" v-preventReClick>第 二 步</el-button>
     </el-tooltip>
      <el-input v-model="input_2" style="width: 447px" disabled></el-input>
   </p>
@@ -21,7 +21,7 @@
  <br/>
   <p>
     <el-tooltip class="item" effect="dark" content="把origin目录下的原始对账单数据根据交易日，按产品名和券商名分别进行归档整理" placement="top-start">
-        <el-button type="info" @click="thirdStep()" id="three" v-preventReClick>第 三 步</el-button>
+        <el-button :disabled=change_Click type="info" @click="thirdStep()" id="three" v-preventReClick>第 三 步</el-button>
     </el-tooltip>
      <el-input v-model="input_3"  style="width: 447px" disabled></el-input>
   </p>
@@ -42,6 +42,8 @@
     name: "OperateBills",
     data() {
       return {
+        token : '',
+        change_Click : false,
         input_1 : '',
         input_2 : '',
         input_3 : '',
@@ -50,8 +52,11 @@
       }
     },
     mounted() {
-      axios.get("http://192.168.1.151:8000/get_init_load_finish_time").then(
+      this.token = JSON.parse(this.$route.query.token);
+      let _this = this;
+      axios.get("http://192.168.1.151:8000/get_init_load_finish_time?token="+this.token).then(
         res=>{
+           _this.change_Click =  parseInt(res.data.authentication_code) === 0;
            if(res.data.code === '200'){
               this.input_1 = res.data.message + "=>" + res.data.complete_time;
               axios.get("http://192.168.1.151:8000/get_two_three_step_finished_time").then(

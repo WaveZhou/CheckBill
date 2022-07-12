@@ -17,13 +17,21 @@
         </a>
       </li>
 
-      <li @click="manage_accountinfomation">
+      <li @click="manage_accountinfomation" v-if=show_status>
         <a
           href="#"
           target="_blank"
         >券商信息管理
         </a>
       </li>
+      <li @click="accountinfo_query">
+        <a
+          href="#"
+          target="_blank"
+        >券商信息查询
+        </a>
+      </li>
+
 
       <li @click="integrated_manage">
         <a
@@ -108,6 +116,7 @@ export default {
       user_name:'',
       user_id: this.$route.query.user_id,
       token : '',
+      show_status: true,
     }
   },
   mounted() {
@@ -116,7 +125,7 @@ export default {
     debugger;
     axios.get("http://192.168.1.151:8000/get_users?token="+this.token).then(res=>{
       //alert(res.data.user_obj.user_name);
-
+      this.show_status = parseInt(res.data.authentication_code) === 1;
       if(res.data.status_code === '302'){
             alert(res.data.message);
             _this.$router.push("/");
@@ -147,8 +156,12 @@ export default {
         let jump_account_page = this.$router.resolve({path:"AccountInformation",query:{token:JSON.stringify(this.token)}});
         window.open(jump_account_page.href,'_blank');
       },
+      accountinfo_query(){
+        let jump_account_query = this.$router.resolve({path:"AccountInfoQuery",query:{token:JSON.stringify(this.token)}});
+        window.open(jump_account_query.href,'_blank');
+      },
       integrated_manage(){
-        let jump_center_page = this.$router.resolve({path:"OperateBills"});
+        let jump_center_page = this.$router.resolve({path:"OperateBills",query:{token:JSON.stringify(this.token)}});
         window.open(jump_center_page.href,'_blank');
       },
       email_config(){

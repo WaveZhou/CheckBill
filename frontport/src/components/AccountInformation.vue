@@ -15,7 +15,7 @@
       :data="table_data"
       style="width: 100%"
       :header-cell-style="{textAlign:'center'}"
-    :cell-style="{textAlign: 'center'}"
+      :cell-style="{textAlign: 'center'}"
       height="520"
       :index="indexMethod"
     >
@@ -309,7 +309,7 @@ export default {
       formLabelWidth:'',
       tableData_back : [],
       tableDate_length_back : '',
-      token: this.$route.query.token,
+      token: '',
       authentication_code : '',
       form: {
         product: "",
@@ -374,7 +374,6 @@ export default {
         backstage_staff:"",
         notes:"",
       },
-
       rules: {
           product: [
             { required: true, message: '请输入产品名称', trigger: 'blur' },
@@ -441,9 +440,7 @@ export default {
       // 搜索功能且分页
       if (search){
         //{{options[scope.row.status]['label']}}
-
         let list =this.tableData.filter(data => !search || data.account.toLowerCase().includes(search.toLowerCase()) || data.belong.toLowerCase().includes(search.toLowerCase()) || data.type.toLowerCase().includes(search.toLowerCase()) || data.product.toLowerCase().includes(search.toLowerCase()) || data.business_department.toLowerCase().includes(search.toLowerCase()) || this.options[data.status]['label'].toLowerCase().includes(search.toLowerCase()));
-
         let fenye = list.slice((this.currentPage-1)*this.pagesize,this.currentPage*this.pagesize);
         // 获取查询的结果，把数组长度赋值给 分页组件中的total
         this.tableDate_length = list.length;
@@ -454,8 +451,6 @@ export default {
       // 分页功能
      else {
        //所有数据的长度  赋值给分页组件中的total
-       //  console.log('no condition_this.tabledata:');
-       //  console.log(this.tableData);
         this.tableData = this.tableData_back;
         this.tableDate_length = this.tableDate_length_back
         let total = this.tableData;
@@ -650,28 +645,10 @@ export default {
     resetForm(formName){
           this.$refs[formName].resetFields();
     },
-     handleAccountList() {
-           const _this = this;
-           //_this.token = _this.$route.params.token;
-          _this.token = JSON.parse(this.$route.query.token);
-
-            axios.get("http://192.168.1.151:8000/get_bills?account_type="+""+"&end_time="+""+"&product_name="+""+"&belong_name="+""+"&department_name="+""+"&token="+_this.token).then(res => {
-              //这是从本地请求的数据接口
-                if(res.data.status_code === '200'){
-                  this.value2 = res.data.t2_day;
-                  this.billList = res.data.bill_list;
-                  this.pagesize = res.data.page_size;
-                }else {
-                  _this.$router.push("/");
-                  alert("请先登录")
-                }
-            }).catch(err =>{
-              console.log(err)
-            })
-        },
 
     initTable(){
         const _this = this;
+        this.token = JSON.parse(this.$route.query.token);
         axios.get("http://192.168.1.151:8000/get_accounts?token="+this.token).then( res => {
         if(res.data.status_code === '200'){
             _this.autentication_code = parseInt(res.data.authentication_code);

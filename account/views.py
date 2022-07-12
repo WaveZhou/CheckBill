@@ -31,7 +31,6 @@ def get_bills(request):
         page_size = 10
     else:
         page_size = page_obj['page_size']
-    pass
     account_type = request.GET.get("account_type")  # 账户类型
     product_name = request.GET.get("product_name")  # 产品名称
     belong_name = request.GET.get("belong_name")  # 券商名称
@@ -133,16 +132,23 @@ def get_accounts(request):
     mp = MysqlProxy()
     sql = "select * from account_information"
     token = request.GET.get('token')
-    query_param_user_id = eval(token).split('_')[0]
+    query_param_user_id = token.split('_')[0]
     sql_get_authentication = "SELECT `is_autorized` FROM `user_profile` up INNER JOIN `staff_wx_login` sw on up.user_id = sw.user_id WHERE sw.user_id = %s"
     authentication_code = mp.get_one(sql_get_authentication,[query_param_user_id])['is_autorized']
     account_list = mp.get_list(sql, None)
-    mp.close()
     for row in account_list:
         for col_key in row:
             if row[col_key] == 'Null' or row[col_key] is None:
                 row[col_key] = ''
-    return JsonResponse({"status_code": '200', "account_list": account_list,"authentication_code":authentication_code})
+    sql_getpage = 'select page_size from jm_statement.user_profile where `user_id` = %s'
+    page_obj = mp.get_one(sql_getpage, [query_param_user_id])
+    global page_size
+    if not page_obj['page_size']:
+        page_size = 10
+    else:
+        page_size = page_obj['page_size']
+    mp.close()
+    return JsonResponse({"status_code": '200', "account_list": account_list,"authentication_code":authentication_code,"page_size":page_size})
 
 
 def insert_account(array):

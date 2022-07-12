@@ -14,6 +14,7 @@ from CheckBillBack.Module_Two import Module_Tow
 from CheckBillBack.utils.Log_Record import Log
 from user.models import Profile
 
+
 from .models import Profile
 import threading
 
@@ -54,7 +55,7 @@ def get_person(request):
     # print(user_list[0])
     # print(type(user_list[0]))
     mq.close()
-    return JsonResponse({'status_code': '200', 'user_obj': user_list[0], 'token': token})
+    return JsonResponse({'status_code': '200', 'user_obj': user_list[0], 'token': token,'authentication_code': user_list[0]['is_autorized']})
 
 
 def save_pagesize(request):
@@ -63,11 +64,12 @@ def save_pagesize(request):
     pagesize = request.GET.get("pagesize")
     login_user_list = cache.get('login_user')
     token = request.GET.get("token")
+
     for ele in login_user_list:
-        if ele[token] != None:
+        if ele[token] is not None:
             login_user = ele[token]
-    if login_user == None:
-        return JsonResponse({'code': '300', 'message': '保存失败，请先登录'})
+    if login_user is None:
+        return JsonResponse({'code': '300', 'message': '会话失效，请先登录'})
     user_id = login_user.user_id
     sql = "UPDATE jm_statement.`user_profile` SET `page_size` = %s WHERE `user_id` = %s"
     mq = MysqlProxy.MysqlProxy()
@@ -166,18 +168,23 @@ def get_two_three_step_finished_time(request):
 
 def get_init_load_finish_time(request):
     dict_com = cache.get('latest_finished_time')
-
+    from utils.MysqlProxy import MysqlProxy
+    mp = MysqlProxy()
+    token = request.GET.get('token')
+    query_param_user_id = token.split('_')[0]
+    sql_get_authentication = "SELECT `is_autorized` FROM `user_profile` up INNER JOIN `staff_wx_login` sw on up.user_id = sw.user_id WHERE sw.user_id = %s"
+    authentication_code = mp.get_one(sql_get_authentication, [query_param_user_id])['is_autorized']
     if dict_com is not None:
         if dict_com['code'] == '200':
             message = dict_com['message']
             finish_time = dict_com['finish_time']
-            return JsonResponse({'code': '200', 'message': message, 'complete_time': finish_time})
+            return JsonResponse({'code': '200', 'message': message, 'complete_time': finish_time,'authentication_code':authentication_code})
         elif dict_com['code'] == '308':
             message = dict_com['message']
             finish_time = dict_com['finish_time']
-            return JsonResponse({'code': '308', 'message': message, 'complete_time': finish_time})
+            return JsonResponse({'code': '308', 'message': message, 'complete_time': finish_time,'authentication_code':authentication_code})
     else:
-        return JsonResponse({'code': '301', 'message': "等待第一步按钮被点击"})
+        return JsonResponse({'code': '301', 'message': "等待第一步按钮被点击",'authentication_code':authentication_code})
 
 
 import threading
