@@ -89,6 +89,13 @@ export default {
       tableDate_length_back : '',
       token: '',
       search: "",
+      col_map : {
+        'product': '产品名称',
+        'belong':'证券机构',
+        'type':'账户类型',
+        'business_department' :'营业部',
+         'status' : '账户状态',
+      },
       options:[
         {
           value : "0",
@@ -109,6 +116,7 @@ export default {
   },
   created() {
      this.initTable();
+
   },
   computed:{
     table_data() {
@@ -117,7 +125,7 @@ export default {
       if (search){
         //{{options[scope.row.status]['label']}}
 
-        let list =this.tableData.filter(data => !search || data.account.toLowerCase().includes(search.toLowerCase()) || data.belong.toLowerCase().includes(search.toLowerCase()) || data.type.toLowerCase().includes(search.toLowerCase()) || data.product.toLowerCase().includes(search.toLowerCase()) || data.business_department.toLowerCase().includes(search.toLowerCase()) || this.options[data.status]['label'].toLowerCase().includes(search.toLowerCase()));
+        let list =this.tableData.filter(data => !search || data.belong.toLowerCase().includes(search.toLowerCase()) || data.type.toLowerCase().includes(search.toLowerCase()) || data.product.toLowerCase().includes(search.toLowerCase()) || data.business_department.toLowerCase().includes(search.toLowerCase()) || this.options[data.status]['label'].toLowerCase().includes(search.toLowerCase()));
 
         let fenye = list.slice((this.currentPage-1)*this.pagesize,this.currentPage*this.pagesize);
         // 获取查询的结果，把数组长度赋值给 分页组件中的total
@@ -151,7 +159,7 @@ export default {
       initTable(){
         const _this = this;
         this.token = JSON.parse(this.$route.query.token);
-        axios.get("http://192.168.1.151:8000/get_accounts?token="+this.token).then( res => {
+        axios.get("http://192.168.1.151:8000/get_accounts?token="+this.token+"&data_flag=" + '0').then( res => {
         if(res.data.status_code === '200'){
             _this.tableData = res.data.account_list;
             _this.tableData_back = res.data.account_list;
@@ -192,14 +200,18 @@ export default {
       let col_row = [];
       for(let row in table_data_list){
            for(let key in table_data_list[row]) {
-             head_row.push(key)
+             head_row.push(this.col_map[key]);
            }
            array_store_row.push(head_row);
            break;
            }
       for(let row in table_data_list){
            for(let key in table_data_list[row]) {
-             col_row.push(table_data_list[row][key])
+             if( key === 'status'){
+               col_row.push(this.options[table_data_list[row][key]]['label']);
+             }else {
+              col_row.push(table_data_list[row][key]) ;
+             }
            }
            array_store_row.push(col_row);
            col_row = [];

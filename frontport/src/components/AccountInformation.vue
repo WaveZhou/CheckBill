@@ -1,7 +1,7 @@
 <template>
   <div>
 
- <h1> 产品券商账户信息表</h1>
+ <h1> 券商账户信息表维护</h1>
      <el-col :span="2" style="float : right;margin-right: 85px;">
       <el-button
         type="success"
@@ -275,13 +275,10 @@
 
     </el-form>
 
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="update('editForm')">确 定</el-button>
       </div>
-
-
 
     </el-dialog>
   </div>
@@ -311,6 +308,28 @@ export default {
       tableDate_length_back : '',
       token: '',
       authentication_code : '',
+       col_map : {
+        'id':'主键id',
+        'product': '产品名称',
+        'belong':'证券机构',
+        'type':'账户类型',
+        'business_department' :'营业部',
+         'status' : '账户状态',
+         'account':'账户号',
+         'card_sh':'上海卡号',
+         'card_sz':'深圳卡号',
+         'start_date':'账户启用日期',
+         'end_date':'账户销户日期',
+         'contacts':'联系人',
+         'contact_email':'邮箱号',
+         'contact_mob':'手机号',
+         'contact_tel':'电话号',
+         'contact_weixin':'微信',
+         'trader':'认领交易员',
+         'salesman':'认领销售员',
+         'backstage_staff':'认领后台员',
+         'notes':'备注'
+      },
       form: {
         product: "",
         belong: "",
@@ -623,14 +642,24 @@ export default {
       let col_row = [];
       for(let row in table_data_list){
            for(let key in table_data_list[row]) {
-             head_row.push(key)
+             if(key === 'id'){
+               continue;
+             }
+              head_row.push(this.col_map[key]);
            }
            array_store_row.push(head_row);
            break;
            }
       for(let row in table_data_list){
            for(let key in table_data_list[row]) {
-             col_row.push(table_data_list[row][key])
+             if(key === 'id'){
+               continue;
+             }
+             if( key === 'status'){
+               col_row.push(this.options[table_data_list[row][key]]['label']);
+             }else {
+              col_row.push(table_data_list[row][key]) ;
+             }
            }
            array_store_row.push(col_row);
            col_row = [];
@@ -649,7 +678,7 @@ export default {
     initTable(){
         const _this = this;
         this.token = JSON.parse(this.$route.query.token);
-        axios.get("http://192.168.1.151:8000/get_accounts?token="+this.token).then( res => {
+        axios.get("http://192.168.1.151:8000/get_accounts?token="+this.token+"&data_flag=" + '1').then( res => {
         if(res.data.status_code === '200'){
             _this.autentication_code = parseInt(res.data.authentication_code);
             _this.change_Click = _this.autentication_code === 0;
