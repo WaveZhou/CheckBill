@@ -34,15 +34,14 @@ class BatchDecompression(object):
                 self.origin_files.append(file_or_rar)
                 self.valid_file_list.append(file_or_rar)
 
-    def batchExt(self):
+    def batchExt(self, com_type=None, pwd=None):
         if len(self.sample) < 1:
             raise Exception('第三个参数数组不能为空')
         filenames = listdir(self.source)
         for file in filenames:
             if '行情' in file:
                 continue
-            if str(file)[-3:] not in (
-                    'rar', 'RAR', 'ZIP', 'zip'):
+            if str(file)[-3:] not in ('rar', 'RAR', 'ZIP', 'zip') and str(file)[-2:] not in ['7z']:
                 continue
             path1 = os.path.join(self.source, file)
             tf = Transform_FileName()
@@ -51,11 +50,21 @@ class BatchDecompression(object):
                 self.date = temp_date
             if file.endswith('rar'):
                 rf = rarfile.RarFile(path1)  # 待解压文件
-                rf.extractall(self.target)  # 解压指定文件路径
+                rf.extractall(self.target)
+                rf.close()  # 解压指定文件路径
             elif file.endswith('zip'):
-                zf = zipfile.ZipFile(path1)
-                zf.extractall(self.target)
+                if pwd is None:
+                    zf = zipfile.ZipFile(path1)
+                    zf.extractall(self.target)
+                else:
+                    zf = zipfile.ZipFile(path1, 'r')
+                    zf.extractall(self.target, pwd=pwd.encode('utf-8'))
                 zf.close()
+            elif file.endswith('7z'):
+                import py7zr
+                with py7zr.SevenZipFile(path1, mode='r') as z:
+                    z.extractall(self.target)
+                z.close()
         folders = listdir(self.target)
         if len(self.sample) == 1:
             pattern = r"" + self.sample[0]  # 指定匹配模板
@@ -78,7 +87,7 @@ class BatchDecompression(object):
     def recursion_search(self, folders, pattern):
         foders_tmp = folders[:]  # 为了避免数组中元素删除造成的指针跳位
         for fd in foders_tmp:
-            if fd.endswith('rar') or fd.endswith('zip'):
+            if fd.endswith('rar') or fd.endswith('zip') or fd.endswith('7z'):
                 if self.flag:
                     os.remove(os.path.join(self.target, fd))
                     # rename_to_new_dir(os.path.join(self.target, fd),os.path.join(self.target),'已处理_'+str(fd),2,False)
