@@ -47,7 +47,6 @@ institution_map = {
 }
 # mp = MysqlProxy()
 
-date_str = str(datetime.datetime.now().date())
 run_date = ''
 
 logger1 = Log('File_Match_Institution_Type')
@@ -226,6 +225,7 @@ class Module_Three():
                                     # traceback.print_exc()
                                     subject_words = '在Map映射中未匹配到键或值'
                                     bug_out_path = os.path.join(self.settings['bugOut'], subject_words)
+                                    date_str = "".join(date_str.split('-'))
                                     if not os.path.exists(bug_out_path):
                                         os.makedirs(bug_out_path, exist_ok=True)
                                     bug_out_path = bug_out_path + r'\{}-log.txt'.format(date_str)
@@ -692,6 +692,7 @@ class Module_Three():
                                         else:
                                             # 文件名在应到表中关联的券商账户机构信息为：simple,账户类型为type，与该文件所在目录institution不匹配
                                             subject_words = '对账单文件关联券商和账户类型问题'
+                                            date_str = "".join(date_str.split('-'))
                                             bug_out_path = os.path.join(self.settings['bugOut'], subject_words)
                                             if not os.path.exists(bug_out_path):
                                                 os.makedirs(bug_out_path, exist_ok=True)
@@ -728,6 +729,7 @@ class Module_Three():
                                                                      file_or_rar)
                                     else:
                                         subject_words = '文件名在应到表匹配到多条记录'
+                                        date_str = "".join(date_str.split('-'))
                                         old_path = os.path.join(self.settings['origin_path'], institution, file_or_rar)
                                         target_path = os.path.join(self.settings['not_matched'], date_str,
                                                                    subject_words)

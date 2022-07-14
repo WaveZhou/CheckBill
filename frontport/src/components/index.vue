@@ -44,9 +44,9 @@
             status:true,
             count : 0,
             list:[
-              {text:'学习javascript'},
-              {text:'学习vue'},
-              {text:'学习项目'}
+              {text:'javascript'},
+              {text:'vue'},
+              {text:'示例项目'}
             ],
 
 

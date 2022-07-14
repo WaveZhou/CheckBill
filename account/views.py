@@ -130,7 +130,11 @@ def get_boxs(request):
 
 def get_accounts(request):
     mp = MysqlProxy()
-    sql = "select * from account_information"
+    data_flag = request.GET.get('data_flag')
+    if data_flag == '1':
+        sql = "select * from account_information"
+    else:
+        sql = "SELECT `product`,`belong`,`type`,`business_department`,`status` FROM account_information"
     token = request.GET.get('token')
     query_param_user_id = token.split('_')[0]
     sql_get_authentication = "SELECT `is_autorized` FROM `user_profile` up INNER JOIN `staff_wx_login` sw on up.user_id = sw.user_id WHERE sw.user_id = %s"

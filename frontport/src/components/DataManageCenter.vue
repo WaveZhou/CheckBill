@@ -6,10 +6,10 @@
 
     <h1>{{ msg }}</h1>
     <hr style="border: #42b983" color="orange" size="5">
-    <h2>前四个链接皆可正常跳转</h2>
+    <h2>目前系统仅支持券商信息与对账单相关功能</h2>
 
     <ul>
-      <li @click="query_bills">
+      <li @click="query_bills" v-if=show_status>
         <a
           href="#"
           target="_blank"
