@@ -43,7 +43,8 @@ institution_map = {
     '中信建投普通账户': 'ZhongXinJianTou',
     '东北普通账户': 'DongBei',
     '华创期货账户': 'HuaChuang',
-    '中财期货账户': 'ZhongCaiQiHuo'
+    '中财期货账户': 'ZhongCaiQiHuo',
+    '中银国际普通账户': 'ZhongYinGuoJi'
 }
 # mp = MysqlProxy()
 
@@ -207,8 +208,6 @@ class Module_Three():
                                     'ZIP') or file_or_rar.endswith('zip'):
                                 temp_store_rar.append(file_or_rar)
                                 # print('是需要解压压缩包的文件')
-                                if institution == '国君普通账户':
-                                    print('暂停')
                                 try:
                                     institution_class = institution_map[institution]
                                     cur_belong = institution[0:2]
@@ -220,9 +219,6 @@ class Module_Three():
                                             os.path.join(self.settings['origin_path'], institution))
                                         # 文件中的日期及文件名（可能含有多个）都需要返回
                                 except Exception as e:
-                                    # print(e)
-                                    # import traceback
-                                    # traceback.print_exc()
                                     subject_words = '在Map映射中未匹配到键或值'
                                     bug_out_path = os.path.join(self.settings['bugOut'], subject_words)
                                     date_str = "".join(date_str.split('-'))
